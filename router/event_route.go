@@ -6,7 +6,7 @@ import (
 )
 
 func EventRoute(router *gin.Engine) {
-	routerGroup := router.Group("api/v1/event")
+	routerGroup := router.Group("api/v1/events")
 	{
 		routerGroup.GET("/", event.GetAllEvent)
 	}

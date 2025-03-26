@@ -32,10 +32,14 @@ func GetAllEvent(c *gin.Context) {
 		utils.SendResponse(c, service)
 		return
 	}
+	filter := c.DefaultQuery("filter", "")
+	filterBy := c.DefaultQuery("filter_by", "")
 
 	pagination := repositories.PaginationConstructor{
-		Limit:  limit,
-		Offset: offset,
+		Limit:    limit,
+		Offset:   offset,
+		Filter:   filter,
+		FilterBy: filterBy,
 	}
 
 	eventsService := services.EventService{}

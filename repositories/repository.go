@@ -1,8 +1,10 @@
 package repositories
 
 import (
+	"fmt"
 	"godp.abdanhafidz.com/config"
 	"gorm.io/gorm"
+	"strings"
 )
 
 type Repositories interface {
@@ -15,9 +17,10 @@ type Repositories interface {
 	Delete()
 }
 type PaginationConstructor struct {
-	Limit  int
-	Offset int
-	Filter string
+	Limit    int
+	Offset   int
+	Filter   string
+	FilterBy string
 }
 
 type PaginationMetadata struct {
@@ -79,13 +82,16 @@ func Find[T1 any, T2 any](repo *Repository[T1, T2]) *gorm.DB {
 }
 
 func FindAllPaginate[T1 any, T2 any](repo *Repository[T1, T2]) *gorm.DB {
-	tx := repo.Transaction.Limit(repo.Pagination.Limit).
-		Offset(repo.Pagination.Offset).
-		Find(&repo.Result)
+	tx := repo.Transaction.Limit(repo.Pagination.Limit).Offset(repo.Pagination.Offset)
+
+	tx = buildFilter(tx, repo.Pagination)
+
+	tx = tx.Find(&repo.Result)
 
 	repo.RowsCount = int(tx.RowsAffected)
 	repo.NoRecord = repo.RowsCount == 0
 	repo.RowsError = tx.Error
+
 	return tx
 }
 
@@ -121,4 +127,25 @@ func CustomQuery[T1 any, T2 any](repo *Repository[T1, T2]) *gorm.DB {
 	repo.NoRecord = repo.RowsCount == 0
 	repo.RowsError = tx.Error
 	return tx
+}
+
+func buildFilter(db *gorm.DB, pagination PaginationConstructor) *gorm.DB {
+	if pagination.Filter != "" && pagination.FilterBy != "" {
+		filterFields := strings.Split(pagination.FilterBy, ",") // Fields to filter by (e.g., title, start_event)
+		filterValues := strings.Split(pagination.Filter, ",")   // Filter values (e.g., OSNK, 2025-04-01)
+
+		// Apply filter to each field dynamically
+		for i, field := range filterFields {
+			if i >= len(filterValues) {
+				break
+			}
+			filterValue := filterValues[i]
+			if filterValue != "" {
+				// Dynamically build the condition for each field
+				condition := fmt.Sprintf("%s ILIKE ?", field)
+				db = db.Where(condition, "%"+filterValue+"%")
+			}
+		}
+	}
+	return db
 }
