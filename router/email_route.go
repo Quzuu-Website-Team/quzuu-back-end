@@ -6,7 +6,7 @@ import (
 )
 
 func EmailRoute(router *gin.Engine) {
-	routerGroup := router.Group("/api/v1/email")
+	routerGroup := router.Group("/api/v1/emails")
 	{
 		routerGroup.POST("/verify", EmailController.CreateVerification)
 		routerGroup.POST("/create-verification", EmailController.CreateVerification)

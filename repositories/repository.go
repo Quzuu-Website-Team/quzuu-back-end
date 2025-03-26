@@ -131,17 +131,15 @@ func CustomQuery[T1 any, T2 any](repo *Repository[T1, T2]) *gorm.DB {
 
 func buildFilter(db *gorm.DB, pagination PaginationConstructor) *gorm.DB {
 	if pagination.Filter != "" && pagination.FilterBy != "" {
-		filterFields := strings.Split(pagination.FilterBy, ",") // Fields to filter by (e.g., title, start_event)
-		filterValues := strings.Split(pagination.Filter, ",")   // Filter values (e.g., OSNK, 2025-04-01)
+		filterFields := strings.Split(pagination.FilterBy, ",")
+		filterValues := strings.Split(pagination.Filter, ",")
 
-		// Apply filter to each field dynamically
 		for i, field := range filterFields {
 			if i >= len(filterValues) {
 				break
 			}
 			filterValue := filterValues[i]
 			if filterValue != "" {
-				// Dynamically build the condition for each field
 				condition := fmt.Sprintf("%s ILIKE ?", field)
 				db = db.Where(condition, "%"+filterValue+"%")
 			}
