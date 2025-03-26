@@ -30,7 +30,7 @@ type AccountDetails struct {
 	LastEducation *string    `json:"last_education"`
 	MaritalStatus *bool      `json:"marital_status"`
 	Avatar        *string    `json:"avatar"`
-	PhoneNumber   *uint      `json:"phone_number"`
+	PhoneNumber   *string    `json:"phone_number"`
 }
 
 type EmailVerification struct {
@@ -66,9 +66,19 @@ type ForgotPassword struct {
 	ExpiredAt time.Time `json:"expired_at"`
 }
 
+type Events struct {
+	IDEvent    uint      `gorm:"primaryKey" json:"id_event"`
+	Title      string    `json:"title"`
+	StartEvent time.Time `json:"start_event"`
+	EndEvent   time.Time `json:"end_event"`
+	SID        string    `json:"sid"`
+	Public     string    `json:"public"`
+}
+
 // Gorm table name settings
 func (Account) TableName() string           { return "account" }
 func (AccountDetails) TableName() string    { return "account_details" }
 func (EmailVerification) TableName() string { return "email_verifications" }
 func (ExternalAuth) TableName() string      { return "extern_auth" }
 func (ForgotPassword) TableName() string    { return "forgot_password" }
+func (Events) TableName() string            { return "events" }

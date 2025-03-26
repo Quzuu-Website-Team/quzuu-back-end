@@ -11,5 +11,6 @@ func StartService() {
 	router.GET("/", controller.HomeController)
 	UserRoute(router)
 	EmailRoute(router)
+	EventRoute(router)
 	router.Run(config.TCP_ADDRESS)
 }

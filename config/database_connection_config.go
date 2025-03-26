@@ -55,6 +55,7 @@ func AutoMigrateAll(db *gorm.DB) {
 		&models.ExternalAuth{},
 		&models.FCM{},
 		&models.ForgotPassword{},
+		&models.Events{},
 	)
 
 	if err != nil {

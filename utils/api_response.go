@@ -9,12 +9,12 @@ import (
 	"godp.abdanhafidz.com/services"
 )
 
-func ResponseOK(c *gin.Context, data any) {
+func ResponseOK(c *gin.Context, data any, metadata any) {
 	res := models.SuccessResponse{
 		Status:   "success",
 		Message:  "Data retrieved successfully!",
 		Data:     data,
-		MetaData: c.Request.Body,
+		MetaData: metadata,
 	}
 	c.JSON(http.StatusOK, res)
 	return
@@ -35,7 +35,7 @@ func ResponseFAIL(c *gin.Context, status int, exception models.Exception) {
 
 func SendResponse(c *gin.Context, data services.Service[any, any]) {
 	if reflect.ValueOf(data.Exception).IsNil() {
-		ResponseOK(c, data)
+		ResponseOK(c, data, nil)
 	} else {
 		if data.Exception.Unauthorized {
 			ResponseFAIL(c, 401, data.Exception)

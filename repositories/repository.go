@@ -20,6 +20,13 @@ type PaginationConstructor struct {
 	Filter string
 }
 
+type PaginationMetadata struct {
+	TotalRecords int `json:"total_records"`
+	TotalPages   int `json:"total_pages"`
+	CurrentPage  int `json:"current_page"`
+	PageSize     int `json:"page_size"`
+}
+
 type CustomQueryConstructor struct {
 	SQL    string
 	Values interface{}
@@ -71,8 +78,11 @@ func Find[T1 any, T2 any](repo *Repository[T1, T2]) *gorm.DB {
 	return tx
 }
 
-func FinddAllPaginate[T1 any, T2 any](repo *Repository[T1, T2]) *gorm.DB {
-	tx := repo.Transaction.Limit(repo.Pagination.Limit).Offset(repo.Pagination.Offset).Find(&repo.Result)
+func FindAllPaginate[T1 any, T2 any](repo *Repository[T1, T2]) *gorm.DB {
+	tx := repo.Transaction.Limit(repo.Pagination.Limit).
+		Offset(repo.Pagination.Offset).
+		Find(&repo.Result)
+
 	repo.RowsCount = int(tx.RowsAffected)
 	repo.NoRecord = repo.RowsCount == 0
 	repo.RowsError = tx.Error
