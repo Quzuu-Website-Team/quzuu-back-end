@@ -16,7 +16,7 @@ func UpdateProfile(c *gin.Context) {
 	userUpdateProfileController.RequestJSON(c, func() {
 		userUpdateProfileController.Service.Constructor = userUpdateProfileController.Request
 		userUpdateProfileController.HeaderParse(c, func() {
-			userUpdateProfileController.Service.Constructor.AccountID = uint(userUpdateProfileController.AccountData.UserID)
+			userUpdateProfileController.Service.Constructor.AccountID = userUpdateProfileController.AccountData.UserID
 		})
 		userProfile.Update()
 	},

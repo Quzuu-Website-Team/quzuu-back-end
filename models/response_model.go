@@ -17,3 +17,8 @@ type AuthenticatedUser struct {
 	Account Account `json:"account"`
 	Token   string  `json:"token"`
 }
+
+type EventResponse struct {
+	Data           *Events
+	RegisterStatus int `json:"register_status"`
+}

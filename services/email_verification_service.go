@@ -4,7 +4,6 @@ import (
 	"math/rand/v2"
 	"time"
 
-	uuid "github.com/satori/go.uuid"
 	"godp.abdanhafidz.com/config"
 	"godp.abdanhafidz.com/models"
 	"godp.abdanhafidz.com/repositories"
@@ -27,7 +26,6 @@ func (s *EmailVerificationService) Create() {
 	dueTime := CalculateDueTime(remainingTime)
 
 	token := uint(rand.IntN(100000))
-	s.Constructor.UUID = uuid.NewV4()
 	repo := repositories.CreateEmailVerification(s.Constructor.AccountID, dueTime, token)
 
 	s.Error = repo.RowsError

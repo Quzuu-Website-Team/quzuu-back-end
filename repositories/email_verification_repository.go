@@ -1,12 +1,13 @@
 package repositories
 
 import (
+	"github.com/google/uuid"
 	"time"
 
 	"godp.abdanhafidz.com/models"
 )
 
-func CreateEmailVerification(accountId uint, dueTime time.Time, token uint) Repository[models.EmailVerification, models.EmailVerification] {
+func CreateEmailVerification(accountId uuid.UUID, dueTime time.Time, token uint) Repository[models.EmailVerification, models.EmailVerification] {
 	repo := Construct[models.EmailVerification, models.EmailVerification](
 		models.EmailVerification{
 			AccountID: accountId,
@@ -19,7 +20,7 @@ func CreateEmailVerification(accountId uint, dueTime time.Time, token uint) Repo
 	return *repo
 }
 
-func GetEmailVerification(account_id uint, token uint) Repository[models.EmailVerification, models.EmailVerification] {
+func GetEmailVerification(account_id uuid.UUID, token uint) Repository[models.EmailVerification, models.EmailVerification] {
 	repo := Construct[models.EmailVerification, models.EmailVerification](
 		models.EmailVerification{
 			AccountID: account_id,

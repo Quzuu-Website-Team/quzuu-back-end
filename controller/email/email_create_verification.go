@@ -13,7 +13,7 @@ func CreateVerification(c *gin.Context) {
 		Service: &emailVerification.Service,
 	}
 	emailVerificationController.HeaderParse(c, func() {
-		emailVerificationController.Service.Constructor.AccountID = uint(emailVerificationController.AccountData.UserID)
+		emailVerificationController.Service.Constructor.AccountID = emailVerificationController.AccountData.UserID
 		emailVerification.Create()
 		emailVerificationController.Response(c)
 	})

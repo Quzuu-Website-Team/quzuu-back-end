@@ -13,7 +13,7 @@ func ChangePassword(c *gin.Context) {
 		Service: &authentication.Service,
 	}
 	changePasswordController.HeaderParse(c, func() {
-		changePasswordController.Service.Constructor.Id = uint(changePasswordController.AccountData.UserID)
+		changePasswordController.Service.Constructor.Id = changePasswordController.AccountData.UserID
 	})
 	changePasswordController.RequestJSON(c, func() {
 		authentication.Update(changePasswordController.Request.OldPassword, changePasswordController.Request.NewPassword)

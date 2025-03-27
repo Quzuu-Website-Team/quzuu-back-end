@@ -1,7 +1,9 @@
 package models
 
+import "github.com/google/uuid"
+
 type AccountData struct {
-	UserID       int
+	UserID       uuid.UUID
 	VerifyStatus string
 	ErrVerif     error
 }

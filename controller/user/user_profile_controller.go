@@ -13,7 +13,7 @@ func Profile(c *gin.Context) {
 		Service: &userProfile.Service,
 	}
 	userProfileController.HeaderParse(c, func() {
-		userProfileController.Service.Constructor.AccountID = uint(userProfileController.AccountData.UserID)
+		userProfileController.Service.Constructor.AccountID = userProfileController.AccountData.UserID
 		userProfile.Retrieve()
 		userProfileController.Response(c)
 	},

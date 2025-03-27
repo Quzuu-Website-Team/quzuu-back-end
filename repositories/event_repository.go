@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"github.com/google/uuid"
 	"godp.abdanhafidz.com/models"
 	"log"
 )
@@ -24,5 +25,18 @@ func GetAllEventsPaginate(pagination PaginationConstructor) Repository[models.Ev
 		log.Println("No events found with the provided pagination")
 	}
 
+	return *repo
+}
+
+func GetDetailEvent(idEvent uuid.UUID) Repository[models.Events, models.Events] {
+	repo := Construct[models.Events, models.Events](
+		models.Events{
+			IDEvent: idEvent,
+		},
+	)
+	repo.Transactions(
+		WhereGivenConstructor[models.Events, models.Events],
+		Find[models.Events, models.Events],
+	)
 	return *repo
 }
