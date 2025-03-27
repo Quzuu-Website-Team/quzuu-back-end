@@ -13,10 +13,9 @@ func EventDetail(c *gin.Context) {
 		Service: &eventDetail.Service,
 	}
 
-	eventDetailController.HeaderParse(c, func() {
+	eventDetailController.RequestJSON(c, func() {
 		eventDetailController.Service.Constructor.IdEvent = eventDetailController.Request.IdEvent
 		eventDetailController.Service.Constructor.IdUser = eventDetailController.Request.IdUser
 		eventDetail.Retrieve()
-		eventDetailController.Response(c)
 	})
 }

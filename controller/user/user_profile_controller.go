@@ -2,6 +2,7 @@ package user
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"godp.abdanhafidz.com/controller"
 	"godp.abdanhafidz.com/models"
 	"godp.abdanhafidz.com/services"
@@ -13,7 +14,7 @@ func Profile(c *gin.Context) {
 		Service: &userProfile.Service,
 	}
 	userProfileController.HeaderParse(c, func() {
-		userProfileController.Service.Constructor.AccountID = userProfileController.AccountData.UserID
+		userProfileController.Service.Constructor.AccountID, _ = uuid.Parse(userProfileController.AccountData.UserID)
 		userProfile.Retrieve()
 		userProfileController.Response(c)
 	},

@@ -2,6 +2,7 @@ package controller
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"godp.abdanhafidz.com/controller"
 	"godp.abdanhafidz.com/models"
 	"godp.abdanhafidz.com/services"
@@ -13,7 +14,7 @@ func CreateVerification(c *gin.Context) {
 		Service: &emailVerification.Service,
 	}
 	emailVerificationController.HeaderParse(c, func() {
-		emailVerificationController.Service.Constructor.AccountID = emailVerificationController.AccountData.UserID
+		emailVerificationController.Service.Constructor.AccountID, _ = uuid.Parse(emailVerificationController.AccountData.UserID)
 		emailVerification.Create()
 		emailVerificationController.Response(c)
 	})

@@ -3,7 +3,7 @@
 package middleware
 
 import (
-	"github.com/google/uuid"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -20,52 +20,62 @@ var secretKey = []byte(salt)
 
 type CustomClaims struct {
 	jwt.RegisteredClaims
-	UserID uuid.UUID `json:"id"`
+	UserID string `json:"id"`
 }
 
-func VerifyToken(bearer_token string) (uuid.UUID, string, error) {
-	// fmt.Println(bearer_token)
+func VerifyToken(bearer_token string) (string, string, error) {
 	token, err := jwt.ParseWithClaims(bearer_token, &CustomClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return secretKey, nil
 	})
 	if err != nil {
-		return uuid.Nil, "invalid-token", err
+		return "", "invalid-token", err
 	}
 
-	// Extract the claims
 	claims, ok := token.Claims.(*CustomClaims)
 	if !ok || !token.Valid {
-		return uuid.Nil, "invalid-token", err
-	}
-	if claims.ExpiresAt != nil && claims.ExpiresAt.Time.Before(time.Now()) {
-		return uuid.Nil, "expired", err
+		return "", "invalid-token", nil
 	}
 
-	return claims.UserID, "valid", err
+	if claims.ExpiresAt != nil && claims.ExpiresAt.Time.Before(time.Now()) {
+		return "", "expired", nil
+	}
+
+	return claims.UserID, "valid", nil
 }
 
 func AuthUser(c *gin.Context) {
 	var currAccData models.AccountData
-	if c.Request.Header["Auth-Bearer-Token"] != nil {
-		token := c.Request.Header["Auth-Bearer-Token"]
-		currAccData.UserID, currAccData.VerifyStatus, currAccData.ErrVerif = VerifyToken(token[0])
-		// fmt.Println("Verify Status :", currAccData.verifyStatus)
-		if currAccData.VerifyStatus == "invalid-token" || currAccData.VerifyStatus == "expired" {
-			currAccData.UserID = uuid.Nil
-			utils.ResponseFAIL(c, 401, models.Exception{Unauthorized: true, Message: "Your session is expired, Please re-Login!"})
-			c.Abort()
-			return
-		} else {
+	authHeader := c.Request.Header.Get("Authorization")
+
+	if authHeader != "" {
+		parts := strings.Split(authHeader, " ")
+		if len(parts) == 2 && parts[0] == "Bearer" {
+			token := parts[1]
+			currAccData.UserID, currAccData.VerifyStatus, currAccData.ErrVerif = VerifyToken(token)
+
+			if currAccData.VerifyStatus == "invalid-token" || currAccData.VerifyStatus == "expired" {
+				currAccData.UserID = ""
+				utils.ResponseFAIL(c, 401, models.Exception{Unauthorized: true, Message: "Your session is expired, Please re-Login!"})
+				c.Abort()
+				return
+			}
+
 			c.Set("accountData", currAccData)
 			c.Next()
+		} else {
+			currAccData.UserID = ""
+			currAccData.VerifyStatus = "invalid-token-format"
+			currAccData.ErrVerif = nil
+			utils.ResponseFAIL(c, 401, models.Exception{Unauthorized: true, Message: "Invalid token format. Please check your Authorization header."})
+			c.Abort()
+			return
 		}
 	} else {
-		currAccData.UserID = uuid.Nil
+		currAccData.UserID = ""
 		currAccData.VerifyStatus = "no-token"
 		currAccData.ErrVerif = nil
 		utils.ResponseFAIL(c, 401, models.Exception{Unauthorized: true, Message: "You have to login first!"})
 		c.Abort()
 		return
 	}
-
 }

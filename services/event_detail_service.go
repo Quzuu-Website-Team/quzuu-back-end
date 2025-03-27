@@ -23,7 +23,7 @@ func (s *EventDetailService) Retrieve() {
 
 	// kalo eventnya private dan di assigned itu ga ditemuin data antara event dan account ke register
 	// bakal ke tolak karena unauthorized
-	if detail.Result.Public == "N" && assigned.RowsError != nil {
+	if detail.Result.Public == "N" && assigned.NoRecord == true {
 		s.Error = assigned.RowsError
 		s.Exception.Unauthorized = true
 		s.Exception.Message = "your account doesnt have access to this event"
@@ -32,7 +32,7 @@ func (s *EventDetailService) Retrieve() {
 
 	// ini ngecek kalo ke assign/register ke event public atau ngga
 	var registerStatus int
-	if assigned.RowsError != nil {
+	if assigned.NoRecord == true {
 		registerStatus = 0
 	} else {
 		registerStatus = 1
