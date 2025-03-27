@@ -129,6 +129,36 @@ type ProblemSetAssign struct {
 	ProblemSet *ProblemSet `gorm:"foreignKey:IDProblemSet"`
 }
 
+type ExamProgress struct {
+	IDProgress     uuid.UUID `gorm:"type:uuid;primary_key;default:uuid_generate_v4()" json:"id_progress"`
+	IDAccount      uuid.UUID `json:"id_account"`
+	IDEvent        uuid.UUID `json:"id_event"`
+	IDProblemSet   uuid.UUID `json:"id_problem_set"`
+	CreatedAt      time.Time `json:"created_at"`
+	DueAt          time.Time `json:"due_at"`
+	QuestionsOrder []string  `gorm:"type:text[]" json:"questions_order"`
+	Answers        any       `gorm:"type:jsonb" json:"answers"`
+
+	Account    *Account    `gorm:"foreignKey:IDAccount"`
+	Event      *Events     `gorm:"foreignKey:IDEvent"`
+	ProblemSet *ProblemSet `gorm:"foreignKey:IDProblemSet"`
+}
+
+type ExamProgress_Result struct {
+	IDProgress     uuid.UUID      `gorm:"type:uuid;primary_key;default:uuid_generate_v4()" json:"id_progress"`
+	IDAccount      uuid.UUID      `json:"id_account"`
+	IDEvent        uuid.UUID      `json:"id_event"`
+	IDProblemSet   uuid.UUID      `json:"id_problem_set"`
+	CreatedAt      time.Time      `json:"created_at"`
+	DueAt          time.Time      `json:"due_at"`
+	QuestionsOrder []string       `gorm:"type:text[]" json:"questions_order"`
+	Answers        postgres.Jsonb `gorm:"type:jsonb" json:"answers"`
+
+	Account    *Account    `gorm:"foreignKey:IDAccount"`
+	Event      *Events     `gorm:"foreignKey:IDEvent"`
+	ProblemSet *ProblemSet `gorm:"foreignKey:IDProblemSet"`
+}
+
 type Result struct {
 	IDResult      uuid.UUID `gorm:"type:uuid;primary_key;default:uuid_generate_v4()" json:"id_result"`
 	IDAccount     uuid.UUID `json:"id_account"`
@@ -151,39 +181,19 @@ type Result struct {
 	ExamProgress *ExamProgress `gorm:"foreignKey:IDProgress"`
 }
 
-type ExamProgress struct {
-	IDProgress     uuid.UUID `gorm:"type:uuid;primary_key;default:uuid_generate_v4()" json:"id_progress"`
-	IDAccount      uuid.UUID `json:"id_account"`
-	IDEvent        uuid.UUID `json:"id_event"`
-	IDProblemSet   uuid.UUID `json:"id_problem_set"`
-	CreatedAt      time.Time `json:"created_at"`
-	DueAt          time.Time `json:"due_at"`
-	QuestionsOrder []string  `gorm:"type:text[]" json:"questions_order"`
-	Answers        any       `gorm:"type:jsonb" json:"answers"`
-
-	Account    *Account    `gorm:"foreignKey:IDAccount"`
-	Event      *Events     `gorm:"foreignKey:IDEvent"`
-	ProblemSet *ProblemSet `gorm:"foreignKey:IDProblemSet"`
-}
-type ExamProgress_Result struct {
-	IDProgress     uuid.UUID      `gorm:"type:uuid;primary_key;default:uuid_generate_v4()" json:"id_progress"`
-	IDAccount      uuid.UUID      `json:"id_account"`
-	IDEvent        uuid.UUID      `json:"id_event"`
-	IDProblemSet   uuid.UUID      `json:"id_problem_set"`
-	CreatedAt      time.Time      `json:"created_at"`
-	DueAt          time.Time      `json:"due_at"`
-	QuestionsOrder []string       `gorm:"type:text[]" json:"questions_order"`
-	Answers        postgres.Jsonb `gorm:"type:jsonb" json:"answers"`
-
-	Account    *Account    `gorm:"foreignKey:IDAccount"`
-	Event      *Events     `gorm:"foreignKey:IDEvent"`
-	ProblemSet *ProblemSet `gorm:"foreignKey:IDProblemSet"`
-}
-
 // Gorm table name settings
-func (Account) TableName() string           { return "account" }
-func (AccountDetails) TableName() string    { return "account_details" }
-func (EmailVerification) TableName() string { return "email_verifications" }
-func (ExternalAuth) TableName() string      { return "extern_auth" }
-func (ForgotPassword) TableName() string    { return "forgot_password" }
-func (Events) TableName() string            { return "events" }
+func (Account) TableName() string             { return "account" }
+func (AccountDetails) TableName() string      { return "account_details" }
+func (EmailVerification) TableName() string   { return "email_verification" }
+func (ExternalAuth) TableName() string        { return "external_auth" }
+func (FCM) TableName() string                 { return "fcm" }
+func (ForgotPassword) TableName() string      { return "forgot_password" }
+func (Events) TableName() string              { return "events" }
+func (Announcement) TableName() string        { return "announcement" }
+func (ProblemSet) TableName() string          { return "problem_sets" }
+func (Questions) TableName() string           { return "questions" }
+func (EventAssign) TableName() string         { return "event_assign" }
+func (ProblemSetAssign) TableName() string    { return "problem_sets_assign" }
+func (Result) TableName() string              { return "result" }
+func (ExamProgress) TableName() string        { return "exam_progress" }
+func (ExamProgress_Result) TableName() string { return "exam_progress_result" }

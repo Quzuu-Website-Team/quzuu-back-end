@@ -3,6 +3,7 @@
 package middleware
 
 import (
+	"github.com/google/uuid"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -19,25 +20,25 @@ var secretKey = []byte(salt)
 
 type CustomClaims struct {
 	jwt.RegisteredClaims
-	UserID int `json:"id"`
+	UserID uuid.UUID `json:"id"`
 }
 
-func VerifyToken(bearer_token string) (int, string, error) {
+func VerifyToken(bearer_token string) (uuid.UUID, string, error) {
 	// fmt.Println(bearer_token)
 	token, err := jwt.ParseWithClaims(bearer_token, &CustomClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return secretKey, nil
 	})
 	if err != nil {
-		return 0, "invalid-token", err
+		return uuid.Nil, "invalid-token", err
 	}
 
 	// Extract the claims
 	claims, ok := token.Claims.(*CustomClaims)
 	if !ok || !token.Valid {
-		return 0, "invalid-token", err
+		return uuid.Nil, "invalid-token", err
 	}
 	if claims.ExpiresAt != nil && claims.ExpiresAt.Time.Before(time.Now()) {
-		return 0, "expired", err
+		return uuid.Nil, "expired", err
 	}
 
 	return claims.UserID, "valid", err
@@ -50,7 +51,7 @@ func AuthUser(c *gin.Context) {
 		currAccData.UserID, currAccData.VerifyStatus, currAccData.ErrVerif = VerifyToken(token[0])
 		// fmt.Println("Verify Status :", currAccData.verifyStatus)
 		if currAccData.VerifyStatus == "invalid-token" || currAccData.VerifyStatus == "expired" {
-			currAccData.UserID = 0
+			currAccData.UserID = uuid.Nil
 			utils.ResponseFAIL(c, 401, models.Exception{Unauthorized: true, Message: "Your session is expired, Please re-Login!"})
 			c.Abort()
 			return
@@ -59,7 +60,7 @@ func AuthUser(c *gin.Context) {
 			c.Next()
 		}
 	} else {
-		currAccData.UserID = 0
+		currAccData.UserID = uuid.Nil
 		currAccData.VerifyStatus = "no-token"
 		currAccData.ErrVerif = nil
 		utils.ResponseFAIL(c, 401, models.Exception{Unauthorized: true, Message: "You have to login first!"})

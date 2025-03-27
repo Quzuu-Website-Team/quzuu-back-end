@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"godp.abdanhafidz.com/models"
 	"log"
 	"os"
 
@@ -10,7 +11,6 @@ import (
 	"gorm.io/gorm/logger"
 
 	"github.com/joho/godotenv"
-	"godp.abdanhafidz.com/models"
 )
 
 var DB *gorm.DB
@@ -48,17 +48,50 @@ func AutoMigrateAll(db *gorm.DB) {
 	db.Logger.LogMode(logger.Info)
 
 	// Auto-migrate all models
-	err := db.AutoMigrate(
-		&models.Account{},
-		&models.AccountDetails{},
-		&models.EmailVerification{},
-		&models.ExternalAuth{},
-		&models.FCM{},
-		&models.ForgotPassword{},
-		&models.Events{},
-	)
-
-	if err != nil {
+	db.Exec("CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";")
+	if err := db.AutoMigrate(&models.Account{}); err != nil {
+		log.Fatal(err)
+	}
+	if err := db.AutoMigrate(&models.AccountDetails{}); err != nil {
+		log.Fatal(err)
+	}
+	if err := db.AutoMigrate(&models.EmailVerification{}); err != nil {
+		log.Fatal(err)
+	}
+	if err := db.AutoMigrate(&models.ExternalAuth{}); err != nil {
+		log.Fatal(err)
+	}
+	if err := db.AutoMigrate(&models.FCM{}); err != nil {
+		log.Fatal(err)
+	}
+	if err := db.AutoMigrate(&models.ForgotPassword{}); err != nil {
+		log.Fatal(err)
+	}
+	if err := db.AutoMigrate(&models.Events{}); err != nil {
+		log.Fatal(err)
+	}
+	if err := db.AutoMigrate(&models.Announcement{}); err != nil {
+		log.Fatal(err)
+	}
+	if err := db.AutoMigrate(&models.ProblemSet{}); err != nil {
+		log.Fatal(err)
+	}
+	if err := db.AutoMigrate(&models.Questions{}); err != nil {
+		log.Fatal(err)
+	}
+	if err := db.AutoMigrate(&models.EventAssign{}); err != nil {
+		log.Fatal(err)
+	}
+	if err := db.AutoMigrate(&models.ProblemSetAssign{}); err != nil {
+		log.Fatal(err)
+	}
+	if err := db.AutoMigrate(&models.ExamProgress{}); err != nil {
+		log.Fatal(err)
+	}
+	if err := db.AutoMigrate(&models.ExamProgress_Result{}); err != nil {
+		log.Fatal(err)
+	}
+	if err := db.AutoMigrate(&models.Result{}); err != nil {
 		log.Fatal(err)
 	}
 

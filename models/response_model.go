@@ -1,5 +1,7 @@
 package models
 
+import "github.com/google/uuid"
+
 type SuccessResponse struct {
 	Status   string `json:"status"`
 	Message  string `json:"message"`
@@ -18,7 +20,12 @@ type AuthenticatedUser struct {
 	Token   string  `json:"token"`
 }
 
-type EventResponse struct {
+type EventDetailRequest struct {
+	IdUser  uuid.UUID `json:"id_user"`
+	IdEvent uuid.UUID `json:"id_event"`
+}
+
+type EventDetailResponse struct {
 	Data           *Events
 	RegisterStatus int `json:"register_status"`
 }

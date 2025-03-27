@@ -40,3 +40,17 @@ func GetDetailEvent(idEvent uuid.UUID) Repository[models.Events, models.Events] 
 	)
 	return *repo
 }
+
+func GetEventAssigned(idEvent uuid.UUID, idAccount uuid.UUID) Repository[models.EventAssign, models.EventAssign] {
+	repo := Construct[models.EventAssign, models.EventAssign](
+		models.EventAssign{
+			IDEvent:   idEvent,
+			IDAccount: idAccount,
+		},
+	)
+	repo.Transactions(
+		WhereGivenConstructor[models.EventAssign, models.EventAssign],
+		Find[models.EventAssign, models.EventAssign],
+	)
+	return *repo
+}
