@@ -3,12 +3,11 @@ package models
 import (
 	"time"
 
-	uuid "github.com/satori/go.uuid"
+	"github.com/google/uuid"
 )
 
 type Account struct {
-	Id                uint       `gorm:"primaryKey" json:"id"`
-	UUID              uuid.UUID  `gorm:"type:uuid" json:"uuid" `
+	Id                uuid.UUID  `gorm:"type:uuid;primary_key;default:uuid_generate_v4()" json:"id"`
 	Email             string     `gorm:"uniqueIndex" json:"email"`
 	Password          string     `json:"password"`
 	IsEmailVerified   bool       `json:"is_email_verified"`
@@ -18,8 +17,8 @@ type Account struct {
 }
 
 type AccountDetails struct {
-	ID            uint       `gorm:"primaryKey" json:"id"`
-	AccountID     uint       `json:"account_id"`
+	ID            uuid.UUID  `gorm:"type:uuid;primary_key;default:uuid_generate_v4()" json:"id"`
+	AccountID     uuid.UUID  `json:"account_id"`
 	InitialName   string     `json:"initial_name"`
 	FullName      *string    `json:"full_name"`
 	DateOfBirth   *time.Time `json:"date_of_birth"`
@@ -31,11 +30,12 @@ type AccountDetails struct {
 	MaritalStatus *bool      `json:"marital_status"`
 	Avatar        *string    `json:"avatar"`
 	PhoneNumber   *string    `json:"phone_number"`
+
+	Account *Account `gorm:"foreignKey:AccountID"`
 }
 
 type EmailVerification struct {
-	ID        uint      `gorm:"primaryKey" json:"id"`
-	UUID      uuid.UUID `gorm:"type:uuid" json:"uuid" `
+	ID        uuid.UUID `gorm:"type:uuid;primary_key;default:uuid_generate_v4()" json:"id"`
 	Token     uint      `json:"token"`
 	AccountID uint      `json:"account_id"`
 	IsExpired bool      `json:"is_expired"`
@@ -44,21 +44,20 @@ type EmailVerification struct {
 }
 
 type ExternalAuth struct {
-	ID            uint   `gorm:"primaryKey" json:"id"`
-	OauthID       string `json:"oauth_id"`
-	AccountID     uint   `json:"account_id"`
-	OauthProvider string `json:"oauth_provider"`
+	ID            uuid.UUID `gorm:"type:uuid;primary_key;default:uuid_generate_v4()" json:"id"`
+	OauthID       string    `json:"oauth_id"`
+	AccountID     uint      `json:"account_id"`
+	OauthProvider string    `json:"oauth_provider"`
 }
 
 type FCM struct {
-	ID        uint   `gorm:"primaryKey" json:"id"`
-	AccountID uint   `json:"account_id"`
-	FCMToken  string `json:"fcm_token"`
+	ID        uuid.UUID `gorm:"type:uuid;primary_key;default:uuid_generate_v4()" json:"id"`
+	AccountID uint      `json:"account_id"`
+	FCMToken  string    `json:"fcm_token"`
 }
 
 type ForgotPassword struct {
-	ID        uint      `gorm:"primaryKey" json:"id"`
-	UUID      uuid.UUID `gorm:"type:uuid" json:"uuid" `
+	ID        uuid.UUID `gorm:"type:uuid;primary_key;default:uuid_generate_v4()" json:"id"`
 	Token     uint      `json:"token"`
 	AccountID uint      `json:"account_id"`
 	IsExpired bool      `json:"is_expired"`
@@ -67,12 +66,20 @@ type ForgotPassword struct {
 }
 
 type Events struct {
-	IDEvent    uint      `gorm:"primaryKey" json:"id_event"`
+	IDEvent    uuid.UUID `gorm:"type:uuid;primary_key;default:uuid_generate_v4()" json:"id_event"`
 	Title      string    `json:"title"`
 	StartEvent time.Time `json:"start_event"`
 	EndEvent   time.Time `json:"end_event"`
 	SID        string    `json:"sid"`
 	Public     string    `json:"public"`
+}
+
+type ProblemSetAssign struct {
+	IDProblemSetAssign uuid.UUID `gorm:"type:uuid;primary_key;default:uuid_generate_v4()" json:"id_problem_set_assign"`
+	IDEvent            uuid.UUID `json:"id_event"`
+	IDProblemSet       uuid.UUID `json:"id_problem_set"`
+
+	Event *Events `gorm:"foreignKey:IDEvent"`
 }
 
 // Gorm table name settings
