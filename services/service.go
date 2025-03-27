@@ -1,6 +1,7 @@
 package services
 
 import (
+	"godp.abdanhafidz.com/repositories"
 	"time"
 
 	"godp.abdanhafidz.com/models"
@@ -19,6 +20,7 @@ type (
 	Service[TConstructor any, TResult any] struct {
 		Constructor TConstructor
 		Result      TResult
+		MetaData    repositories.PaginationMetadata
 		Exception   models.Exception
 		Error       error
 	}

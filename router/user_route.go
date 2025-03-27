@@ -7,7 +7,7 @@ import (
 )
 
 func UserRoute(router *gin.Engine) {
-	routerGroup := router.Group("/api/v1/user")
+	routerGroup := router.Group("/api/v1/users")
 	{
 		routerGroup.POST("/login", UserController.Login)
 		routerGroup.POST("/register", UserController.Register)

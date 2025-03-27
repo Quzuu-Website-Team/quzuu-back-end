@@ -3,6 +3,7 @@ package controller
 import (
 	"github.com/gin-gonic/gin"
 	"godp.abdanhafidz.com/models"
+	"godp.abdanhafidz.com/repositories"
 	"godp.abdanhafidz.com/services"
 	"godp.abdanhafidz.com/utils"
 )
@@ -60,6 +61,10 @@ func (controller *Controller[T1, T2, T3]) Response(c *gin.Context) {
 	case controller.Service.Exception.Message != "":
 		utils.ResponseFAIL(c, 400, controller.Service.Exception)
 	default:
-		utils.ResponseOK(c, controller.Service.Result)
+		if controller.Service.MetaData != (repositories.PaginationMetadata{}) {
+			utils.ResponseOK(c, controller.Service.Result, controller.Service.MetaData)
+		} else {
+			utils.ResponseOK(c, controller.Service.Result, struct{}{})
+		}
 	}
 }
