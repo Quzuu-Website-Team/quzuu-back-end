@@ -2,6 +2,7 @@ package user
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"godp.abdanhafidz.com/controller"
 	"godp.abdanhafidz.com/models"
 	"godp.abdanhafidz.com/services"
@@ -13,7 +14,7 @@ func ChangePassword(c *gin.Context) {
 		Service: &authentication.Service,
 	}
 	changePasswordController.HeaderParse(c, func() {
-		changePasswordController.Service.Constructor.Id = uint(changePasswordController.AccountData.UserID)
+		changePasswordController.Service.Constructor.Id, _ = uuid.Parse(changePasswordController.AccountData.UserID)
 	})
 	changePasswordController.RequestJSON(c, func() {
 		authentication.Update(changePasswordController.Request.OldPassword, changePasswordController.Request.NewPassword)

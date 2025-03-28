@@ -42,7 +42,7 @@ func GetAllEvent(c *gin.Context) {
 		FilterBy: filterBy,
 	}
 
-	eventsService := services.EventService{}
+	eventsService := services.GetAllEventService{}
 	getAllEventController := controller.Controller[any, models.Events, []models.Events]{
 		Service: &eventsService.Service,
 	}

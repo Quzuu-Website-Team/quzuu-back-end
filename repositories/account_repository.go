@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"github.com/google/uuid"
 	"godp.abdanhafidz.com/models"
 )
 
@@ -15,7 +16,7 @@ func GetAccountbyEmail(email string) Repository[models.Account, models.Account] 
 	return *repo
 }
 
-func GetAccountbyId(account_id uint) Repository[models.Account, models.Account] {
+func GetAccountbyId(account_id uuid.UUID) Repository[models.Account, models.Account] {
 	repo := Construct[models.Account, models.Account](
 		models.Account{Id: account_id},
 	)
@@ -32,7 +33,7 @@ func UpdateAccount(account models.Account) Repository[models.Account, models.Acc
 	Update(repo)
 	return *repo
 }
-func GetAccountDetailsbyId(account_id uint) Repository[models.AccountDetails, models.AccountDetails] {
+func GetAccountDetailsbyId(account_id uuid.UUID) Repository[models.AccountDetails, models.AccountDetails] {
 	repo := Construct[models.AccountDetails, models.AccountDetails](
 		models.AccountDetails{AccountID: account_id},
 	)

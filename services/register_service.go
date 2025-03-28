@@ -3,7 +3,6 @@ package services
 import (
 	"errors"
 
-	uuid "github.com/satori/go.uuid"
 	"godp.abdanhafidz.com/models"
 	"godp.abdanhafidz.com/repositories"
 	"gorm.io/gorm"
@@ -22,7 +21,6 @@ func (s *RegisterService) Create() {
 	hashed_password, err_hash := HashPassword(s.Constructor.Password)
 	s.Error = err_hash
 	s.Constructor.Password = hashed_password
-	s.Constructor.UUID = uuid.NewV4()
 	accountCreated := repositories.CreateAccount(s.Constructor)
 	if errors.Is(accountCreated.RowsError, gorm.ErrDuplicatedKey) {
 		s.Exception.DataDuplicate = true

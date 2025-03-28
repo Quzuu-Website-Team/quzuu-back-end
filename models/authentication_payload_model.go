@@ -1,7 +1,7 @@
 package models
 
 type AccountData struct {
-	UserID       int
+	UserID       string
 	VerifyStatus string
 	ErrVerif     error
 }

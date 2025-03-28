@@ -5,11 +5,11 @@ import (
 	"godp.abdanhafidz.com/repositories"
 )
 
-type EventService struct {
+type GetAllEventService struct {
 	Service[models.Events, []models.Events]
 }
 
-func (s *EventService) GetAllEventPaginate(pagination repositories.PaginationConstructor) {
+func (s *GetAllEventService) GetAllEventPaginate(pagination repositories.PaginationConstructor) {
 	eventsRepo := repositories.GetAllEventsPaginate(pagination)
 
 	events := eventsRepo.Result
