@@ -15,7 +15,6 @@ type Repositories interface {
 	Update()
 	CustomQuery()
 	Delete()
-	PreloadQuery()
 }
 type PaginationConstructor struct {
 	Limit    int
@@ -36,15 +35,20 @@ type CustomQueryConstructor struct {
 	Values interface{}
 }
 
+type PreloadQueryConstructor struct {
+	Tables []string
+}
+
 type Repository[TConstructor any, TResult any] struct {
-	Constructor TConstructor
-	Pagination  PaginationConstructor
-	CustomQuery CustomQueryConstructor
-	Result      TResult
-	Transaction *gorm.DB
-	RowsCount   int
-	NoRecord    bool
-	RowsError   error
+	Constructor  TConstructor
+	Pagination   PaginationConstructor
+	CustomQuery  CustomQueryConstructor
+	PreloadQuery PreloadQueryConstructor
+	Result       TResult
+	Transaction  *gorm.DB
+	RowsCount    int
+	NoRecord     bool
+	RowsError    error
 }
 
 func Construct[TConstructor any, TResult any](constructor ...TConstructor) *Repository[TConstructor, TResult] {
@@ -75,7 +79,8 @@ func WhereGivenConstructor[T1 any, T2 any](repo *Repository[T1, T2]) *gorm.DB {
 	return tx
 }
 func Find[T1 any, T2 any](repo *Repository[T1, T2]) *gorm.DB {
-	tx := repo.Transaction.Find(&repo.Result)
+	tx := preloadQuery(repo.Transaction, repo.PreloadQuery)
+	tx = repo.Transaction.Find(&repo.Result)
 	repo.RowsCount = int(tx.RowsAffected)
 	repo.NoRecord = repo.RowsCount == 0
 	repo.RowsError = tx.Error
@@ -86,6 +91,7 @@ func FindAllPaginate[T1 any, T2 any](repo *Repository[T1, T2]) *gorm.DB {
 	tx := repo.Transaction.Limit(repo.Pagination.Limit).Offset(repo.Pagination.Offset)
 
 	tx = buildFilter(tx, repo.Pagination)
+	tx = preloadQuery(tx, repo.PreloadQuery)
 
 	tx = tx.Find(&repo.Result)
 
@@ -130,14 +136,13 @@ func CustomQuery[T1 any, T2 any](repo *Repository[T1, T2]) *gorm.DB {
 	return tx
 }
 
-func PreloadQuery[T1, T2 any](preloadFields ...string) func(*Repository[T1, T2]) *gorm.DB {
-	return func(repo *Repository[T1, T2]) *gorm.DB {
-		tx := repo.Transaction
-		for _, field := range preloadFields {
-			tx = tx.Preload(field)
+func preloadQuery(db *gorm.DB, preloadFields PreloadQueryConstructor) *gorm.DB {
+	if preloadFields.Tables != nil {
+		for _, field := range preloadFields.Tables {
+			db = db.Preload(field)
 		}
-		return tx
 	}
+	return db
 }
 
 func buildFilter(db *gorm.DB, pagination PaginationConstructor) *gorm.DB {

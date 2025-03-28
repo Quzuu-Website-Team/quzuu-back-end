@@ -15,6 +15,8 @@ type Account struct {
 	IsDetailCompleted bool       `json:"is_detail_completed"`
 	CreatedAt         time.Time  `json:"created_at"`
 	DeletedAt         *time.Time `json:"deleted_at" gorm:"default:null"`
+
+	AccountDetails AccountDetails `gorm:"foreignKey:AccountID;references:ID"`
 }
 
 type AccountDetails struct {
@@ -49,27 +51,33 @@ type EmailVerification struct {
 type ExternalAuth struct {
 	ID            uuid.UUID `gorm:"type:uuid;primary_key;default:uuid_generate_v4()" json:"id"`
 	OauthID       string    `json:"oauth_id"`
-	AccountID     uint      `json:"account_id"`
+	AccountID     uuid.UUID `json:"account_id"`
 	OauthProvider string    `json:"oauth_provider"`
+
+	Account *Account `gorm:"foreignKey:AccountID;references:ID"`
 }
 
 type FCM struct {
 	ID        uuid.UUID `gorm:"type:uuid;primary_key;default:uuid_generate_v4()" json:"id"`
-	AccountID uint      `json:"account_id"`
+	AccountID uuid.UUID `json:"account_id"`
 	FCMToken  string    `json:"fcm_token"`
+
+	Account *Account `gorm:"foreignKey:AccountID;references:ID"`
 }
 
 type ForgotPassword struct {
 	ID        uuid.UUID `gorm:"type:uuid;primary_key;default:uuid_generate_v4()" json:"id"`
 	Token     uint      `json:"token"`
-	AccountID uint      `json:"account_id"`
+	AccountID uuid.UUID `json:"account_id"`
 	IsExpired bool      `json:"is_expired"`
 	CreatedAt time.Time `json:"created_at"`
 	ExpiredAt time.Time `json:"expired_at"`
+
+	Account *Account `gorm:"foreignKey:AccountID;references:ID"`
 }
 
 type Events struct {
-	IDEvent    uuid.UUID `gorm:"type:uuid;primary_key;default:uuid_generate_v4()" json:"id_event"`
+	ID         uuid.UUID `gorm:"type:uuid;primary_key;default:uuid_generate_v4()" json:"id"`
 	Title      string    `json:"title"`
 	StartEvent time.Time `json:"start_event"`
 	EndEvent   time.Time `json:"end_event"`
@@ -78,27 +86,29 @@ type Events struct {
 }
 
 type Announcement struct {
-	IDAnnouncement uuid.UUID `gorm:"type:uuid;primary_key;default:uuid_generate_v4()" json:"id_announcement"`
-	Title          string    `json:"title"`
-	CreatedAt      time.Time `json:"created_at"`
-	Message        string    `json:"message"`
-	Publisher      string    `json:"publisher"`
-	IDEvent        uint      `json:"id_event"`
+	ID        uuid.UUID `gorm:"type:uuid;primary_key;default:uuid_generate_v4()" json:"id_announcement"`
+	Title     string    `json:"title"`
+	CreatedAt time.Time `json:"created_at"`
+	Message   string    `json:"message"`
+	Publisher string    `json:"publisher"`
+	IDEvent   uuid.UUID `json:"id_event"`
+
+	Event *Events `gorm:"foreignKey:IDEvent;references:ID"`
 }
 
 type ProblemSet struct {
-	IDProblemSet uuid.UUID     `gorm:"type:uuid;primary_key;default:uuid_generate_v4()" json:"id_problem_set"`
-	Title        string        `json:"title"`
-	Duration     time.Duration `json:"duration"`
-	Randomize    uint          `json:"randomize"`
-	MC_Count     uint          `json:"mc_count"`
-	SA_Count     uint          `json:"sa_count"`
-	Essay_Count  uint          `json:"essay_count"`
+	ID          uuid.UUID     `gorm:"type:uuid;primary_key;default:uuid_generate_v4()" json:"id_problem_set"`
+	Title       string        `json:"title"`
+	Duration    time.Duration `json:"duration"`
+	Randomize   uint          `json:"randomize"`
+	MC_Count    uint          `json:"mc_count"`
+	SA_Count    uint          `json:"sa_count"`
+	Essay_Count uint          `json:"essay_count"`
 }
 
 type Questions struct {
-	IDQuestion   uuid.UUID `gorm:"type:uuid;primary_key;default:uuid_generate_v4()" json:"id_question"`
-	Type         string    `json:"type"` //MultChoices, ShortAns, Essay, IntPuzzle, IntType
+	ID           uuid.UUID `gorm:"type:uuid;primary_key;default:uuid_generate_v4()" json:"id_question"`
+	Type         string    `json:"type"` // MultChoices, ShortAns, Essay, IntPuzzle, IntType
 	Question     string    `json:"question"`
 	Options      []string  `gorm:"type:text[]" json:"options"`
 	AnsKey       []string  `gorm:"type:text[]" json:"ans_key"`
@@ -107,30 +117,30 @@ type Questions struct {
 	NullMark     float64   `json:"null_mark"`
 	IDProblemSet uuid.UUID `json:"id_problem_set"`
 
-	ProblemSet *ProblemSet `gorm:"foreignKey:IDProblemSet;references:IDProblemSet"`
+	ProblemSet *ProblemSet `gorm:"foreignKey:IDProblemSet;references:ID"`
 }
 
 type EventAssign struct {
-	IDAssign   uuid.UUID `gorm:"type:uuid;primary_key;default:uuid_generate_v4()" json:"id_assign"`
+	ID         uuid.UUID `gorm:"type:uuid;primary_key;default:uuid_generate_v4()" json:"id_assign"`
 	IDAccount  uuid.UUID `json:"id_account"`
 	IDEvent    uuid.UUID `json:"id_event"`
 	AssignedAt time.Time `json:"assigned_at"`
 
 	Account *Account `gorm:"foreignKey:IDAccount;references:ID"`
-	Event   *Events  `gorm:"foreignKey:IDEvent;references:IDEvent"`
+	Event   *Events  `gorm:"foreignKey:IDEvent;references:ID"`
 }
 
 type ProblemSetAssign struct {
-	IDProblemSetAssign uuid.UUID `gorm:"type:uuid;primary_key;default:uuid_generate_v4()" json:"id_problem_set_assign"`
-	IDEvent            uuid.UUID `json:"id_event"`
-	IDProblemSet       uuid.UUID `json:"id_problem_set"`
+	ID           uuid.UUID `gorm:"type:uuid;primary_key;default:uuid_generate_v4()" json:"id_problem_set_assign"`
+	IDEvent      uuid.UUID `json:"id_event"`
+	IDProblemSet uuid.UUID `json:"id_problem_set"`
 
-	Event      *Events     `gorm:"foreignKey:IDEvent;references:IDEvent"`
-	ProblemSet *ProblemSet `gorm:"foreignKey:IDProblemSet;references:IDProblemSet"`
+	Event      *Events     `gorm:"foreignKey:IDEvent;references:ID"`
+	ProblemSet *ProblemSet `gorm:"foreignKey:IDProblemSet;references:ID"`
 }
 
 type ExamProgress struct {
-	IDProgress     uuid.UUID `gorm:"type:uuid;primary_key;default:uuid_generate_v4()" json:"id_progress"`
+	ID             uuid.UUID `gorm:"type:uuid;primary_key;default:uuid_generate_v4()" json:"id_progress"`
 	IDAccount      uuid.UUID `json:"id_account"`
 	IDEvent        uuid.UUID `json:"id_event"`
 	IDProblemSet   uuid.UUID `json:"id_problem_set"`
@@ -140,12 +150,12 @@ type ExamProgress struct {
 	Answers        any       `gorm:"type:jsonb" json:"answers"`
 
 	Account    *Account    `gorm:"foreignKey:IDAccount;references:ID"`
-	Event      *Events     `gorm:"foreignKey:IDEvent;references:IDEvent"`
-	ProblemSet *ProblemSet `gorm:"foreignKey:IDProblemSet;references:IDProblemSet"`
+	Event      *Events     `gorm:"foreignKey:IDEvent;references:ID"`
+	ProblemSet *ProblemSet `gorm:"foreignKey:IDProblemSet;references:ID"`
 }
 
 type ExamProgress_Result struct {
-	IDProgress     uuid.UUID      `gorm:"type:uuid;primary_key;default:uuid_generate_v4()" json:"id_progress"`
+	ID             uuid.UUID      `gorm:"type:uuid;primary_key;default:uuid_generate_v4()" json:"id_progress"`
 	IDAccount      uuid.UUID      `json:"id_account"`
 	IDEvent        uuid.UUID      `json:"id_event"`
 	IDProblemSet   uuid.UUID      `json:"id_problem_set"`
@@ -155,12 +165,12 @@ type ExamProgress_Result struct {
 	Answers        postgres.Jsonb `gorm:"type:jsonb" json:"answers"`
 
 	Account    *Account    `gorm:"foreignKey:IDAccount;references:ID"`
-	Event      *Events     `gorm:"foreignKey:IDEvent;references:IDEvent"`
-	ProblemSet *ProblemSet `gorm:"foreignKey:IDProblemSet;references:IDProblemSet"`
+	Event      *Events     `gorm:"foreignKey:IDEvent;references:ID"`
+	ProblemSet *ProblemSet `gorm:"foreignKey:IDProblemSet;references:ID"`
 }
 
 type Result struct {
-	IDResult      uuid.UUID `gorm:"type:uuid;primary_key;default:uuid_generate_v4()" json:"id_result"`
+	ID            uuid.UUID `gorm:"type:uuid;primary_key;default:uuid_generate_v4()" json:"id_result"`
 	IDAccount     uuid.UUID `json:"id_account"`
 	IDEvent       uuid.UUID `json:"id_event"`
 	IDProblemSet  uuid.UUID `json:"id_problem_set"`
@@ -176,9 +186,9 @@ type Result struct {
 	FinalScore    float64   `json:"final_score"`
 
 	Account      *Account      `gorm:"foreignKey:IDAccount;references:ID"`
-	Event        *Events       `gorm:"foreignKey:IDEvent;references:IDEvent"`
-	ProblemSet   *ProblemSet   `gorm:"foreignKey:IDProblemSet;references:IDProblemSet"`
-	ExamProgress *ExamProgress `gorm:"foreignKey:IDProgress;references:IDProgress"`
+	Event        *Events       `gorm:"foreignKey:IDEvent;references:ID"`
+	ProblemSet   *ProblemSet   `gorm:"foreignKey:IDProblemSet;references:ID"`
+	ExamProgress *ExamProgress `gorm:"foreignKey:IDProgress;references:ID"`
 }
 
 // Gorm table name settings

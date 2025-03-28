@@ -11,12 +11,20 @@ type GetProblemSetService struct {
 }
 
 func (s *GetProblemSetService) GetProblemSetByEventID(idEvent uuid.UUID) {
-	problemsetsRepo := repositories.GetProblemSet(idEvent)
-	if problemsetsRepo.NoRecord == true {
-		s.Error = problemsetsRepo.RowsError
+	problemsetAssignRepo := repositories.GetProblemSet(idEvent)
+	if problemsetAssignRepo.NoRecord == true {
+		s.Error = problemsetAssignRepo.RowsError
 		s.Exception.DataNotFound = true
 		s.Exception.Message = "no problemset found in the event"
 		return
 	}
-	s.Result = problemsetsRepo.Result
+
+	var problemSets []models.ProblemSet
+	for _, assign := range problemsetAssignRepo.Result {
+		if assign.ProblemSet != nil {
+			problemSets = append(problemSets, *assign.ProblemSet)
+		}
+	}
+
+	s.Result = problemSets
 }
