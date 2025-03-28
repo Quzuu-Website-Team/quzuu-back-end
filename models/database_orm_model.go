@@ -73,7 +73,7 @@ type Events struct {
 	Title      string    `json:"title"`
 	StartEvent time.Time `json:"start_event"`
 	EndEvent   time.Time `json:"end_event"`
-	SID        string    `json:"sid"`
+	EventCode  string    `json:"event_code"`
 	Public     string    `json:"public"`
 }
 
