@@ -32,7 +32,7 @@ func (s *RegisterService) Create() {
 		return
 	}
 	userProfile := UserProfileService{}
-	userProfile.Constructor.AccountID = accountCreated.Result.Id
+	userProfile.Constructor.AccountID = accountCreated.Result.ID
 	userProfile.Create()
 	if userProfile.Error != nil {
 		s.Error = userProfile.Error

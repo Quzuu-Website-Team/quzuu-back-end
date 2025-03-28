@@ -44,11 +44,10 @@ func (s *AuthenticationService) Update(oldPassword string, newPassword string) {
 		s.Exception.Message = "Password must have at least 8 characters!"
 		return
 	}
-	accountData := repositories.GetAccountbyId(s.Constructor.Id)
+	accountData := repositories.GetAccountbyId(s.Constructor.ID)
 
 	if accountData.NoRecord {
 		s.Exception.DataNotFound = true
-		s.Exception.Message = "there is no account with given credentials!"
 		return
 	}
 	if VerifyPassword(accountData.Result.Password, oldPassword) != nil {

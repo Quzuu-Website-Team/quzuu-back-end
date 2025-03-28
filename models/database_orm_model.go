@@ -8,7 +8,7 @@ import (
 )
 
 type Account struct {
-	Id                uuid.UUID  `gorm:"type:uuid;primary_key;default:uuid_generate_v4()" json:"id"`
+	ID                uuid.UUID  `gorm:"type:uuid;primary_key;default:uuid_generate_v4()" json:"id"`
 	Email             string     `gorm:"uniqueIndex" json:"email"`
 	Password          string     `json:"password"`
 	IsEmailVerified   bool       `json:"is_email_verified"`
@@ -32,7 +32,7 @@ type AccountDetails struct {
 	Avatar        *string    `json:"avatar"`
 	PhoneNumber   *string    `json:"phone_number"`
 
-	Account *Account `gorm:"foreignKey:AccountID"`
+	Account *Account `gorm:"foreignKey:AccountID;references:ID"`
 }
 
 type EmailVerification struct {
@@ -43,7 +43,7 @@ type EmailVerification struct {
 	CreatedAt time.Time `json:"created_at"`
 	ExpiredAt time.Time `json:"expired_at"`
 
-	Account *Account `gorm:"foreignKey:AccountID"`
+	Account *Account `gorm:"foreignKey:AccountID;references:ID"`
 }
 
 type ExternalAuth struct {
@@ -107,7 +107,7 @@ type Questions struct {
 	NullMark     float64   `json:"null_mark"`
 	IDProblemSet uuid.UUID `json:"id_problem_set"`
 
-	ProblemSet *ProblemSet `gorm:"foreignKey:IDProblemSet"`
+	ProblemSet *ProblemSet `gorm:"foreignKey:IDProblemSet;references:IDProblemSet"`
 }
 
 type EventAssign struct {
@@ -116,8 +116,8 @@ type EventAssign struct {
 	IDEvent    uuid.UUID `json:"id_event"`
 	AssignedAt time.Time `json:"assigned_at"`
 
-	Account *Account `gorm:"foreignKey:IDAccount"`
-	Event   *Events  `gorm:"foreignKey:IDEvent"`
+	Account *Account `gorm:"foreignKey:IDAccount;references:ID"`
+	Event   *Events  `gorm:"foreignKey:IDEvent;references:IDEvent"`
 }
 
 type ProblemSetAssign struct {
@@ -125,8 +125,8 @@ type ProblemSetAssign struct {
 	IDEvent            uuid.UUID `json:"id_event"`
 	IDProblemSet       uuid.UUID `json:"id_problem_set"`
 
-	Event      *Events     `gorm:"foreignKey:IDEvent"`
-	ProblemSet *ProblemSet `gorm:"foreignKey:IDProblemSet"`
+	Event      *Events     `gorm:"foreignKey:IDEvent;references:IDEvent"`
+	ProblemSet *ProblemSet `gorm:"foreignKey:IDProblemSet;references:IDProblemSet"`
 }
 
 type ExamProgress struct {
@@ -139,9 +139,9 @@ type ExamProgress struct {
 	QuestionsOrder []string  `gorm:"type:text[]" json:"questions_order"`
 	Answers        any       `gorm:"type:jsonb" json:"answers"`
 
-	Account    *Account    `gorm:"foreignKey:IDAccount"`
-	Event      *Events     `gorm:"foreignKey:IDEvent"`
-	ProblemSet *ProblemSet `gorm:"foreignKey:IDProblemSet"`
+	Account    *Account    `gorm:"foreignKey:IDAccount;references:ID"`
+	Event      *Events     `gorm:"foreignKey:IDEvent;references:IDEvent"`
+	ProblemSet *ProblemSet `gorm:"foreignKey:IDProblemSet;references:IDProblemSet"`
 }
 
 type ExamProgress_Result struct {
@@ -154,9 +154,9 @@ type ExamProgress_Result struct {
 	QuestionsOrder []string       `gorm:"type:text[]" json:"questions_order"`
 	Answers        postgres.Jsonb `gorm:"type:jsonb" json:"answers"`
 
-	Account    *Account    `gorm:"foreignKey:IDAccount"`
-	Event      *Events     `gorm:"foreignKey:IDEvent"`
-	ProblemSet *ProblemSet `gorm:"foreignKey:IDProblemSet"`
+	Account    *Account    `gorm:"foreignKey:IDAccount;references:ID"`
+	Event      *Events     `gorm:"foreignKey:IDEvent;references:IDEvent"`
+	ProblemSet *ProblemSet `gorm:"foreignKey:IDProblemSet;references:IDProblemSet"`
 }
 
 type Result struct {
@@ -175,10 +175,10 @@ type Result struct {
 	ManualScore   float64   `json:"manual_score"`
 	FinalScore    float64   `json:"final_score"`
 
-	Account      *Account      `gorm:"foreignKey:IDAccount"`
-	Event        *Events       `gorm:"foreignKey:IDEvent"`
-	ProblemSet   *ProblemSet   `gorm:"foreignKey:IDProblemSet"`
-	ExamProgress *ExamProgress `gorm:"foreignKey:IDProgress"`
+	Account      *Account      `gorm:"foreignKey:IDAccount;references:ID"`
+	Event        *Events       `gorm:"foreignKey:IDEvent;references:IDEvent"`
+	ProblemSet   *ProblemSet   `gorm:"foreignKey:IDProblemSet;references:IDProblemSet"`
+	ExamProgress *ExamProgress `gorm:"foreignKey:IDProgress;references:IDProgress"`
 }
 
 // Gorm table name settings

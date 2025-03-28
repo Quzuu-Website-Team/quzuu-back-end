@@ -15,6 +15,7 @@ type Repositories interface {
 	Update()
 	CustomQuery()
 	Delete()
+	PreloadQuery()
 }
 type PaginationConstructor struct {
 	Limit    int
@@ -127,6 +128,16 @@ func CustomQuery[T1 any, T2 any](repo *Repository[T1, T2]) *gorm.DB {
 	repo.NoRecord = repo.RowsCount == 0
 	repo.RowsError = tx.Error
 	return tx
+}
+
+func PreloadQuery[T1, T2 any](preloadFields ...string) func(*Repository[T1, T2]) *gorm.DB {
+	return func(repo *Repository[T1, T2]) *gorm.DB {
+		tx := repo.Transaction
+		for _, field := range preloadFields {
+			tx = tx.Preload(field)
+		}
+		return tx
+	}
 }
 
 func buildFilter(db *gorm.DB, pagination PaginationConstructor) *gorm.DB {

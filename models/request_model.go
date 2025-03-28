@@ -1,5 +1,7 @@
 package models
 
+import "github.com/google/uuid"
+
 type LoginRequest struct {
 	Email    string `json:"email" binding:"required"`
 	Password string `json:"password" binding:"required"`
@@ -19,4 +21,8 @@ type CreateEmailVerificationRequest struct {
 type ChangePasswordRequest struct {
 	OldPassword string `json:"old_password" binding:"required" `
 	NewPassword string `json:"new_password" binding:"required" `
+}
+
+type GetProblemSetByEventID struct {
+	IdEvent uuid.UUID `json:"id_event" binding:"required"`
 }

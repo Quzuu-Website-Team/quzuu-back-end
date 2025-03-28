@@ -18,7 +18,7 @@ func GetAccountbyEmail(email string) Repository[models.Account, models.Account] 
 
 func GetAccountbyId(account_id uuid.UUID) Repository[models.Account, models.Account] {
 	repo := Construct[models.Account, models.Account](
-		models.Account{Id: account_id},
+		models.Account{ID: account_id},
 	)
 	repo.Transactions(
 		WhereGivenConstructor[models.Account, models.Account],

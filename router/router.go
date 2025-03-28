@@ -12,5 +12,6 @@ func StartService() {
 	UserRoute(router)
 	EmailRoute(router)
 	EventRoute(router)
+	ProblemSetRoute(router)
 	router.Run(config.TCP_ADDRESS)
 }
