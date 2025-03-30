@@ -11,5 +11,6 @@ func EventRoute(router *gin.Engine) {
 	{
 		routerGroup.GET("/", event.GetAllEvent)
 		routerGroup.GET("/event-details", middleware.AuthUser, event.EventDetail)
+		routerGroup.POST("/register-event", middleware.AuthUser, event.JoinEvent)
 	}
 }
