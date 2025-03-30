@@ -74,7 +74,7 @@ type Events struct {
 	StartEvent time.Time `json:"start_event"`
 	EndEvent   time.Time `json:"end_event"`
 	EventCode  string    `json:"event_code"`
-	Public     string    `json:"public"`
+	IsPublic     bool    `json:"is_public"`
 }
 
 type Announcement struct {
