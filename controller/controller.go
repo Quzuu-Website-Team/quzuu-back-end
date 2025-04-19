@@ -47,11 +47,12 @@ func (controller *Controller[T1, T2, T3]) RequestJSON(c *gin.Context, act func()
 func (controller *Controller[T1, T2, T3]) Response(c *gin.Context) {
 	switch {
 	case controller.Service.Error != nil:
+		utils.LogError(controller.Service.Error)
 		utils.ResponseFAIL(c, 500, models.Exception{
 			InternalServerError: true,
 			Message:             "Internal Server Error",
 		})
-		utils.LogError(controller.Service.Error)
+
 	case controller.Service.Exception.DataDuplicate:
 		utils.ResponseFAIL(c, 400, controller.Service.Exception)
 	case controller.Service.Exception.Unauthorized:
