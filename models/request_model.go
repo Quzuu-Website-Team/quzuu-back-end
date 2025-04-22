@@ -26,3 +26,12 @@ type ChangePasswordRequest struct {
 type GetProblemSetByEventID struct {
 	IdEvent uuid.UUID `json:"id_event" binding:"required"`
 }
+type EventDetailRequest struct {
+	IdUser  uuid.UUID `json:"id_user"`
+	IdEvent uuid.UUID `json:"id_event"`
+}
+
+type JoinEventRequest struct {
+	IdEvent   uuid.UUID `json:"id_event"`
+	EventCode string    `json:"event_code"`
+}
