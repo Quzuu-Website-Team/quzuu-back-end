@@ -23,6 +23,9 @@ type ChangePasswordRequest struct {
 	NewPassword string `json:"new_password" binding:"required" `
 }
 
+type GetProblemSetByEventID struct {
+	IdEvent uuid.UUID `json:"id_event" binding:"required"`
+}
 type EventDetailRequest struct {
 	IdUser  uuid.UUID `json:"id_user"`
 	IdEvent uuid.UUID `json:"id_event"`
