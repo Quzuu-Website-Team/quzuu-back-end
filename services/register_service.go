@@ -3,6 +3,7 @@ package services
 import (
 	"errors"
 
+	"github.com/google/uuid"
 	"godp.abdanhafidz.com/models"
 	"godp.abdanhafidz.com/repositories"
 	"gorm.io/gorm"
@@ -21,6 +22,7 @@ func (s *RegisterService) Create() {
 	hashed_password, err_hash := HashPassword(s.Constructor.Password)
 	s.Error = err_hash
 	s.Constructor.Password = hashed_password
+	s.Constructor.Id = uuid.New()
 	accountCreated := repositories.CreateAccount(s.Constructor)
 	if errors.Is(accountCreated.RowsError, gorm.ErrDuplicatedKey) {
 		s.Exception.DataDuplicate = true
@@ -32,7 +34,7 @@ func (s *RegisterService) Create() {
 		return
 	}
 	userProfile := UserProfileService{}
-	userProfile.Constructor.AccountID = accountCreated.Result.Id
+	userProfile.Constructor.AccountId = accountCreated.Result.Id
 	userProfile.Create()
 	if userProfile.Error != nil {
 		s.Error = userProfile.Error

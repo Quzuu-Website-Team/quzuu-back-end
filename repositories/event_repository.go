@@ -1,9 +1,10 @@
 package repositories
 
 import (
+	"log"
+
 	"github.com/google/uuid"
 	"godp.abdanhafidz.com/models"
-	"log"
 )
 
 func GetAllEventsPaginate(pagination PaginationConstructor) Repository[models.Events, []models.Events] {
@@ -28,10 +29,10 @@ func GetAllEventsPaginate(pagination PaginationConstructor) Repository[models.Ev
 	return *repo
 }
 
-func GetDetailEvent(idEvent uuid.UUID) Repository[models.Events, models.Events] {
+func GetEventDetailByEventId(EventId uuid.UUID) Repository[models.Events, models.Events] {
 	repo := Construct[models.Events, models.Events](
 		models.Events{
-			IDEvent: idEvent,
+			Id: EventId,
 		},
 	)
 	repo.Transactions(
@@ -41,11 +42,24 @@ func GetDetailEvent(idEvent uuid.UUID) Repository[models.Events, models.Events] 
 	return *repo
 }
 
-func GetEventAssigned(idEvent uuid.UUID, idAccount uuid.UUID) Repository[models.EventAssign, models.EventAssign] {
+func GetEventDetailBySlug(slug string) Repository[models.Events, models.Events] {
+	repo := Construct[models.Events, models.Events](
+		models.Events{
+			Slug: slug,
+		},
+	)
+	repo.Transactions(
+		WhereGivenConstructor[models.Events, models.Events],
+		Find[models.Events, models.Events],
+	)
+	return *repo
+}
+
+func GetEventAssigned(EventId uuid.UUID, AccountId uuid.UUID) Repository[models.EventAssign, models.EventAssign] {
 	repo := Construct[models.EventAssign, models.EventAssign](
 		models.EventAssign{
-			IDEvent:   idEvent,
-			IDAccount: idAccount,
+			EventId:   EventId,
+			AccountId: AccountId,
 		},
 	)
 	repo.Transactions(

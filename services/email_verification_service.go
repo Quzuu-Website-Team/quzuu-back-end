@@ -1,7 +1,10 @@
 package services
 
 import (
+	"fmt"
+	"log"
 	"math/rand/v2"
+	"net/smtp"
 	"time"
 
 	"godp.abdanhafidz.com/config"
@@ -14,7 +17,7 @@ type EmailVerificationService struct {
 }
 
 func (s *EmailVerificationService) Create() {
-	accountRepo := repositories.GetAccountbyId(s.Constructor.AccountID)
+	accountRepo := repositories.GetAccountById(s.Constructor.AccountId)
 	if accountRepo.NoRecord {
 		s.Error = accountRepo.RowsError
 		s.Exception.DataNotFound = true
@@ -25,21 +28,61 @@ func (s *EmailVerificationService) Create() {
 	remainingTime := time.Duration(config.EMAIL_VERIFICATION_DURATION) * time.Hour
 	dueTime := CalculateDueTime(remainingTime)
 
-	token := uint(rand.IntN(100000))
-	repo := repositories.CreateEmailVerification(s.Constructor.AccountID, dueTime, token)
+	token := uint(rand.IntN(999999-100000) + 100000)
+
+	repo := repositories.CreateEmailVerification(s.Constructor.Id, s.Constructor.AccountId, dueTime, token)
 
 	s.Error = repo.RowsError
 	s.Result = repo.Result
+
+	// ⬇ Kirim token ke email user menggunakan SMTP
+	go func(toEmail string, token uint) {
+		from := config.SMTP_SENDER_EMAIL
+		password := config.SMTP_SENDER_PASSWORD
+		smtpHost := config.SMTP_HOST
+		smtpPort := config.SMTP_PORT
+
+		auth := smtp.PlainAuth("", from, password, smtpHost)
+
+		subject := "Email Verification Token"
+		body := fmt.Sprintf("Your verification token is: %06d\nPlease use it before it expires.", token)
+
+		msg := []byte("To: " + toEmail + "\r\n" +
+			"Subject: " + subject + "\r\n" +
+			"\r\n" +
+			body + "\r\n")
+
+		err := smtp.SendMail(smtpHost+":"+smtpPort, auth, from, []string{toEmail}, msg)
+		if err != nil {
+			s.Error = err
+			log.Printf("Error sending verification email: %v", err)
+			return
+		}
+	}(accountRepo.Result.Email, token)
+	s.Result.Token = 0
 }
 
 func (s *EmailVerificationService) Validate() {
-	repo := repositories.GetEmailVerification(s.Constructor.AccountID, s.Constructor.Token)
+	repo := repositories.GetEmailVerification(s.Constructor.AccountId, s.Constructor.Token)
 	s.Error = repo.RowsError
+
 	if repo.NoRecord {
 		s.Exception.DataNotFound = true
 		s.Exception.Message = "Invalid token!"
 		return
 	}
+
+	if repo.Result.ExpiredAt.Before(time.Now()) {
+		s.Exception.Unauthorized = true
+		s.Exception.Message = "Token has expired!"
+		repositories.UpdateExpiredEmailVerification(s.Constructor.Id)
+		s.Delete()
+		return
+	}
+	account := repositories.GetAccountById(repo.Result.AccountId)
+	account.Result.IsEmailVerified = true
+
+	repositories.UpdateAccount(account.Result)
 	s.Result = repo.Result
 }
 

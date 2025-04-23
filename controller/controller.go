@@ -13,10 +13,10 @@ type (
 		RequestJSON(c *gin.Context)
 		Response(c *gin.Context)
 	}
-	Controller[T1 any, T2 any, T3 any] struct {
+	Controller[TRequest any, TConstructor any, TResult any] struct {
 		AccountData models.AccountData
-		Request     T1
-		Service     *services.Service[T2, T3]
+		Request     TRequest
+		Service     *services.Service[TConstructor, TResult]
 	}
 )
 

@@ -22,3 +22,29 @@ type EventDetailResponse struct {
 	Data           *Events
 	RegisterStatus int `json:"register_status"`
 }
+
+type Options struct {
+	OptionCategory OptionCategory `json:"option_category"`
+	OptionValues   []OptionValues `json:"option_values"`
+}
+type OptionsResponse struct {
+	Options []Options `json:"options"`
+}
+
+type UserProfileResponse struct {
+	Account Account        `json:"account"`
+	Details AccountDetails `json:"details"`
+}
+
+type AcademyMaterialResponse struct {
+	Materials AcademyMaterial
+	Contents  []AcademyContent
+}
+type AcademyResponse struct {
+	Academy   Academy                   `json:"academy"`
+	Materials []AcademyMaterialResponse `json:"academy_materials"`
+}
+
+type AllAcademyResponse struct {
+	Academies []AcademyResponse `json:"academy_dasar"`
+}

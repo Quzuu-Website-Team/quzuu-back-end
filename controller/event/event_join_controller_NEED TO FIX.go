@@ -2,7 +2,6 @@ package event
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 	"godp.abdanhafidz.com/controller"
 	"godp.abdanhafidz.com/models"
 	"godp.abdanhafidz.com/services"
@@ -15,9 +14,9 @@ func JoinEvent(c *gin.Context) {
 	}
 
 	eventAssignController.RequestJSON(c, func() {
-		eventAssignController.Service.Constructor.IdEvent = eventAssignController.Request.IdEvent
+		eventAssignController.Service.Constructor.EventId = eventAssignController.Request.EventId
 		eventAssignController.Service.Constructor.EventCode = eventAssignController.Request.EventCode
-		idUser, _ := uuid.Parse(eventAssignController.AccountData.UserID)
+		idUser := eventAssignController.AccountData.UserID
 		eventAssign.Create(idUser)
 	})
 }

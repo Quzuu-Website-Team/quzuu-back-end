@@ -1,4 +1,4 @@
-package user
+package auth
 
 import (
 	"github.com/gin-gonic/gin"
@@ -15,6 +15,8 @@ func Register(c *gin.Context) {
 	registerController.RequestJSON(c, func() {
 		registerController.Service.Constructor.Password = registerController.Request.Password
 		registerController.Service.Constructor.Email = registerController.Request.Email
+		registerController.Service.Constructor.Username = registerController.Request.Username
+		registerController.Service.Constructor.Role = "USER"
 		register.Create()
 	})
 }

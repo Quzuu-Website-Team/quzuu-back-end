@@ -10,12 +10,12 @@ type LoginRequest struct {
 type RegisterRequest struct {
 	Name     string `json:"name"`
 	Email    string `json:"email" binding:"required,email"`
-	Phone    string `json:"phone"`
+	Username string `json:"username" binding:"required"`
 	Password string `json:"password" binding:"required"`
 }
 
 type CreateEmailVerificationRequest struct {
-	AccountID int `json:"account_id" binding:"required"`
+	AccountId uuid.UUID `json:"account_id" binding:"required"`
 }
 
 type ChangePasswordRequest struct {
@@ -25,10 +25,32 @@ type ChangePasswordRequest struct {
 
 type EventDetailRequest struct {
 	IdUser  uuid.UUID `json:"id_user"`
-	IdEvent uuid.UUID `json:"id_event"`
+	EventId uuid.UUID `json:"id_event"`
 }
 
 type JoinEventRequest struct {
-	IdEvent   uuid.UUID `json:"id_event"`
+	EventId   uuid.UUID `json:"id_event"`
 	EventCode string    `json:"event_code"`
+}
+
+type CreateVerifyEmailRequest struct {
+	Token uint `json:"token" binding:"required"`
+}
+
+type OptionsRequest struct {
+	OptionName  string   `json:"option_name" binding:"required"`
+	OptionValue []string `json:"option_values" binding:"required"`
+}
+
+type ExternalAuthRequest struct {
+	OauthID       string `json:"oauth_id" binding:"required"`
+	OauthProvider string `json:"oauth_provider" binding:"required"`
+}
+
+type ForgotPasswordRequest struct {
+	Email string `json:"email" binding:"required,email"`
+}
+type ValidateForgotPasswordRequest struct {
+	Token       uint   `json:"token" binding:"required"`
+	NewPassword string `json:"new_password"`
 }

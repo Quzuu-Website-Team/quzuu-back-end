@@ -1,10 +1,10 @@
 package services
 
 import (
-	"godp.abdanhafidz.com/repositories"
 	"time"
 
 	"godp.abdanhafidz.com/models"
+	"godp.abdanhafidz.com/repositories"
 )
 
 type (
@@ -17,12 +17,15 @@ type (
 		Authenticate()
 		Authorize()
 	}
+	IService interface {
+		Implements()
+	}
 	Service[TConstructor any, TResult any] struct {
 		Constructor TConstructor
 		Result      TResult
-		MetaData    repositories.PaginationMetadata
 		Exception   models.Exception
 		Error       error
+		MetaData    repositories.PaginationMetadata
 	}
 )
 
