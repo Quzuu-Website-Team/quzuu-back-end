@@ -1,1 +1,8 @@
-GO Clean Starter Rest API Design Pattern
+---
+title: Quzuu Api Dev
+emoji: 🐠
+colorFrom: indigo
+colorTo: gray
+sdk: docker
+pinned: false
+---
