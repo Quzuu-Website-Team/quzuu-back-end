@@ -94,7 +94,7 @@ type ProblemSet struct {
 }
 
 type Questions struct {
-	Id           uuid.UUID `gorm:"type:uuid;primary_key;default:uuid_generate_v4()" json:"id_question"`
+	Id           uint      `gorm:"type:primary_key" json:"id_question"`
 	Type         string    `json:"type"` //MultChoices, ShortAns, Essay, IntPuzzle, IntType
 	Question     string    `json:"question"`
 	Options      []string  `gorm:"type:text[]" json:"options"`
@@ -133,7 +133,7 @@ type ExamProgress struct {
 	ProblemSetId   uuid.UUID `json:"id_problem_set"`
 	CreatedAt      time.Time `json:"created_at"`
 	DueAt          time.Time `json:"due_at"`
-	QuestionsOrder []string  `gorm:"type:text[]" json:"questions_order"`
+	QuestionsOrder []int     `gorm:"type:text[]" json:"questions_order"`
 	Answers        any       `gorm:"type:jsonb" json:"answers"`
 
 	Account    *Account    `gorm:"foreignKey:AccountId"`

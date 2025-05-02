@@ -54,3 +54,8 @@ type ValidateForgotPasswordRequest struct {
 	Token       uint   `json:"token" binding:"required"`
 	NewPassword string `json:"new_password"`
 }
+
+type ExamRequest struct {
+	IdEvent       string `json:"id_event" binding:"required"`
+	IdProblemsets string `json:"id_problem_set" binding:"required"`
+}
