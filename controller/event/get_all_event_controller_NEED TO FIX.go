@@ -42,12 +42,15 @@ func GetAllEvent(c *gin.Context) {
 		FilterBy: filterBy,
 	}
 
-	eventsService := services.GetAllEventService{}
+	eventsService := services.EventList{}
 	getAllEventController := controller.Controller[any, models.Events, []models.Events]{
 		Service: &eventsService.Service,
 	}
 
-	eventsService.GetAllEventPaginate(pagination)
+	getAllEventController.HeaderParse(c, func() {
+		userid := getAllEventController.AccountData.UserID
+		eventsService.EventListWithFilter(userid, pagination)
+	})
 
 	getAllEventController.Response(c)
 }
