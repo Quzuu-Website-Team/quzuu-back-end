@@ -1,9 +1,10 @@
 package repositories
 
 import (
+	"log"
+
 	"github.com/google/uuid"
 	"godp.abdanhafidz.com/models"
-	"log"
 )
 
 func GetAllEventsPaginate(pagination PaginationConstructor) Repository[models.Events, []models.Events] {
