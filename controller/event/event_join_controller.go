@@ -7,7 +7,7 @@ import (
 	"godp.abdanhafidz.com/services"
 )
 
-func JoinEvent(c *gin.Context) {
+func Register(c *gin.Context) {
 	eventAssign := services.JoinEventService{}
 	eventAssignController := controller.Controller[models.JoinEventRequest, models.JoinEventRequest, models.EventDetailResponse]{
 		Service: &eventAssign.Service,

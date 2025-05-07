@@ -9,8 +9,8 @@ import (
 func EventRoute(router *gin.Engine) {
 	routerGroup := router.Group("api/v1/events")
 	{
-		routerGroup.GET("/", middleware.AuthUser, event.GetAllEvent)
+		routerGroup.GET("/", event.EventList)
 		routerGroup.GET("/details/:id_event", middleware.AuthUser, event.EventDetail)
-		routerGroup.POST("/register-event", middleware.AuthUser, event.JoinEvent)
+		routerGroup.POST("/register-event", middleware.AuthUser, event.Register)
 	}
 }
