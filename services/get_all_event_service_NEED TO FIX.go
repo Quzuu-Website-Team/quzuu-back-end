@@ -1,16 +1,17 @@
 package services
 
 import (
+	"github.com/google/uuid"
 	"godp.abdanhafidz.com/models"
 	"godp.abdanhafidz.com/repositories"
 )
 
-type GetAllEventService struct {
+type EventList struct {
 	Service[models.Events, []models.Events]
 }
 
-func (s *GetAllEventService) GetAllEventPaginate(pagination repositories.PaginationConstructor) {
-	eventsRepo := repositories.GetAllEventsPaginate(pagination)
+func (s *EventList) EventListWithFilter(userid uuid.UUID, pagination repositories.PaginationConstructor) {
+	eventsRepo := repositories.EventListWithFilter(userid, pagination)
 
 	events := eventsRepo.Result
 
