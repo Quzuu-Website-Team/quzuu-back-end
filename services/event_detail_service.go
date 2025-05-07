@@ -1,17 +1,18 @@
 package services
 
 import (
+	"github.com/google/uuid"
 	"godp.abdanhafidz.com/models"
 	"godp.abdanhafidz.com/repositories"
 )
 
 type EventDetailService struct {
-	Service[models.EventDetailRequest, models.EventDetailResponse]
+	Service[models.Events, models.EventDetailResponse]
 }
 
-func (s *EventDetailService) Retrieve() {
+func (s *EventDetailService) Retrieve(userId uuid.UUID) {
 	// ngecek event nya dulu
-	detail := repositories.GetDetailEvent(s.Constructor.IdEvent)
+	detail := repositories.GetEventDetailBySlug(s.Constructor.Slug)
 	if detail.NoRecord {
 		s.Error = detail.RowsError
 		s.Exception.DataNotFound = true
@@ -19,7 +20,7 @@ func (s *EventDetailService) Retrieve() {
 		return
 	}
 	// ngecek apakah si event dan si user udah ke assign/register
-	assigned := repositories.GetEventAssigned(s.Constructor.IdEvent, s.Constructor.IdUser)
+	assigned := repositories.GetEventAssigned(detail.Result.Id, userId)
 
 	// kalo eventnya private dan di assigned itu ga ditemuin data antara event dan account ke register
 	// bakal ke tolak karena unauthorized

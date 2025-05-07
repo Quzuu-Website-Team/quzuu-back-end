@@ -9,7 +9,7 @@ type GetAllEventService struct {
 	Service[models.Events, []models.Events]
 }
 
-func (s *GetAllEventService) GetAllEventPaginate(pagination repositories.PaginationConstructor) {
+func (s *GetAllEventService) Retrieve(pagination repositories.PaginationConstructor) {
 	eventsRepo := repositories.GetAllEventsPaginate(pagination)
 
 	events := eventsRepo.Result

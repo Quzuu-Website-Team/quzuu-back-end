@@ -1,16 +1,17 @@
 package event
 
 import (
+	"strconv"
+
 	"github.com/gin-gonic/gin"
 	"godp.abdanhafidz.com/controller"
 	"godp.abdanhafidz.com/models"
 	"godp.abdanhafidz.com/repositories"
 	"godp.abdanhafidz.com/services"
 	"godp.abdanhafidz.com/utils"
-	"strconv"
 )
 
-func GetAllEvent(c *gin.Context) {
+func EventList(c *gin.Context) {
 	limit, err := strconv.Atoi(c.DefaultQuery("limit", "10"))
 	if err != nil {
 		service := services.Service[any, any]{
@@ -47,7 +48,7 @@ func GetAllEvent(c *gin.Context) {
 		Service: &eventsService.Service,
 	}
 
-	eventsService.GetAllEventPaginate(pagination)
+	eventsService.Retrieve(pagination)
 
 	getAllEventController.Response(c)
 }

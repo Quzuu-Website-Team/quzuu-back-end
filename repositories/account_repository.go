@@ -16,9 +16,18 @@ func GetAccountbyEmail(email string) Repository[models.Account, models.Account] 
 	return *repo
 }
 
-func GetAccountbyId(account_id uuid.UUID) Repository[models.Account, models.Account] {
+func GetAllAccount() Repository[models.Account, []models.Account] {
+	repo := Construct[models.Account, []models.Account](
+		models.Account{},
+	)
+	repo.Transactions(
+		Find[models.Account, []models.Account],
+	)
+	return *repo
+}
+func GetAccountById(AccountId uuid.UUID) Repository[models.Account, models.Account] {
 	repo := Construct[models.Account, models.Account](
-		models.Account{Id: account_id},
+		models.Account{Id: AccountId},
 	)
 	repo.Transactions(
 		WhereGivenConstructor[models.Account, models.Account],
@@ -26,23 +35,29 @@ func GetAccountbyId(account_id uuid.UUID) Repository[models.Account, models.Acco
 	)
 	return *repo
 }
+
 func UpdateAccount(account models.Account) Repository[models.Account, models.Account] {
 	repo := Construct[models.Account, models.Account](
 		account,
 	)
-	Update(repo)
+	repo.Transaction.Save(&repo.Constructor)
+	repo.Result = repo.Constructor
 	return *repo
 }
-func GetAccountDetailsbyId(account_id uuid.UUID) Repository[models.AccountDetails, models.AccountDetails] {
+
+func GetDetailAccountById(AccountId uuid.UUID) Repository[models.AccountDetails, models.AccountDetails] {
 	repo := Construct[models.AccountDetails, models.AccountDetails](
-		models.AccountDetails{AccountID: account_id},
+		models.AccountDetails{AccountId: AccountId},
 	)
+
+	// fmt.Println("Account ID:", repo.Constructor.AccountId)
 	repo.Transactions(
 		WhereGivenConstructor[models.AccountDetails, models.AccountDetails],
 		Find[models.AccountDetails, models.AccountDetails],
 	)
 	return *repo
 }
+
 func CreateAccount(account models.Account) Repository[models.Account, models.Account] {
 	repo := Construct[models.Account, models.Account](
 		account,
@@ -50,6 +65,7 @@ func CreateAccount(account models.Account) Repository[models.Account, models.Acc
 	Create(repo)
 	return *repo
 }
+
 func CreateAccountDetails(accountDetails models.AccountDetails) Repository[models.AccountDetails, models.AccountDetails] {
 	repo := Construct[models.AccountDetails, models.AccountDetails](
 		accountDetails,
@@ -57,12 +73,15 @@ func CreateAccountDetails(accountDetails models.AccountDetails) Repository[model
 	Create(repo)
 	return *repo
 }
+
 func UpdateAccountDetails(accountDetails models.AccountDetails) Repository[models.AccountDetails, models.AccountDetails] {
 	repo := Construct[models.AccountDetails, models.AccountDetails](
-		models.AccountDetails{AccountID: accountDetails.AccountID},
+		models.AccountDetails{AccountId: accountDetails.AccountId},
 	)
-	repo.Transaction.Where("account_id = ?", accountDetails.AccountID).First(&repo.Constructor)
-	accountDetails.ID = repo.Constructor.ID
+	repo.Transaction.Where("account_id = ?", accountDetails.AccountId).First(&repo.Constructor)
+	accountDetails.Id = repo.Constructor.Id
+	// fmt.Println(repo.Constructor)
+	// fmt.Println(accountDetails)
 	repo.Transaction.Updates(accountDetails)
 	repo.Result = accountDetails
 	return *repo

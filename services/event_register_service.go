@@ -4,16 +4,15 @@ import (
 	"github.com/google/uuid"
 	"godp.abdanhafidz.com/models"
 	"godp.abdanhafidz.com/repositories"
-	"log"
 )
 
 type JoinEventService struct {
 	Service[models.JoinEventRequest, models.EventDetailResponse]
 }
 
-func (s *JoinEventService) Create(idAccount uuid.UUID) {
+func (s *JoinEventService) Create(AccountId uuid.UUID) {
 	event := repositories.GetEventByCode(s.Constructor.EventCode)
-	log.Printf("event: %v", event)
+	// log.Printf("event: %v", event)
 	if event.NoRecord {
 		s.Error = event.RowsError
 		s.Exception.DataNotFound = true
@@ -21,12 +20,12 @@ func (s *JoinEventService) Create(idAccount uuid.UUID) {
 		return
 	}
 	// ngecek apakah si event dan si user udah ke assign/register
-	assigned := repositories.GetEventAssigned(s.Constructor.IdEvent, idAccount)
+	assigned := repositories.GetEventAssigned(s.Constructor.EventId, AccountId)
 	if assigned.NoRecord == true {
 		accountAssigned := &models.EventAssign{
-			IDAssign:  uuid.New(),
-			IDEvent:   s.Constructor.IdEvent,
-			IDAccount: idAccount,
+			Id:        uuid.New(),
+			EventId:   s.Constructor.EventId,
+			AccountId: AccountId,
 		}
 		repositories.AssignEvent(*accountAssigned)
 	} else {

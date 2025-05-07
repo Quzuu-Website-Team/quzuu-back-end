@@ -9,13 +9,13 @@ import (
 
 func EventDetail(c *gin.Context) {
 	eventDetail := services.EventDetailService{}
-	eventDetailController := controller.Controller[models.EventDetailRequest, models.EventDetailRequest, models.EventDetailResponse]{
+	eventDetailController := controller.Controller[any, models.Events, models.EventDetailResponse]{
 		Service: &eventDetail.Service,
 	}
 
-	eventDetailController.RequestJSON(c, func() {
-		eventDetailController.Service.Constructor.IdEvent = eventDetailController.Request.IdEvent
-		eventDetailController.Service.Constructor.IdUser = eventDetailController.Request.IdUser
-		eventDetail.Retrieve()
+	eventDetailController.HeaderParse(c, func() {
+		eventDetailController.Service.Constructor.Slug = c.Param("event_slug")
+		eventDetail.Retrieve(eventDetailController.AccountData.UserID)
+		eventDetailController.Response(c)
 	})
 }
