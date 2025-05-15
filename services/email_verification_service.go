@@ -16,8 +16,8 @@ type EmailVerificationService struct {
 	Service[models.EmailVerification, models.EmailVerification]
 }
 
-func (s *EmailVerificationService) Create() {
-	accountRepo := repositories.GetAccountById(s.Constructor.AccountId)
+func (s *EmailVerificationService) Create(email string) {
+	accountRepo := repositories.GetAccountbyEmail(email)
 	if accountRepo.NoRecord {
 		s.Error = accountRepo.RowsError
 		s.Exception.DataNotFound = true
@@ -62,8 +62,16 @@ func (s *EmailVerificationService) Create() {
 	s.Result.Token = 0
 }
 
-func (s *EmailVerificationService) Validate() {
-	repo := repositories.GetEmailVerification(s.Constructor.AccountId, s.Constructor.Token)
+func (s *EmailVerificationService) Validate(email string) {
+	accountRepo := repositories.GetAccountbyEmail(email)
+	if accountRepo.NoRecord {
+		s.Error = accountRepo.RowsError
+		s.Exception.DataNotFound = true
+		s.Exception.Message = "There is no account data with given credentials!"
+		return
+	}
+
+	repo := repositories.GetEmailVerification(accountRepo.Result.Id, s.Constructor.Token)
 	s.Error = repo.RowsError
 
 	if repo.NoRecord {

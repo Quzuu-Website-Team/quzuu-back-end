@@ -15,7 +15,7 @@ type RegisterRequest struct {
 }
 
 type CreateEmailVerificationRequest struct {
-	AccountId uuid.UUID `json:"account_id" binding:"required"`
+	Email string `json:"email" binding:"required, email"`
 }
 
 type ChangePasswordRequest struct {
@@ -33,8 +33,9 @@ type JoinEventRequest struct {
 	EventCode string    `json:"event_code"`
 }
 
-type CreateVerifyEmailRequest struct {
-	Token uint `json:"token" binding:"required"`
+type ValidateVerifyEmailRequest struct {
+	Email string `json:"email" binding:"required, email"`
+	Token uint   `json:"token" binding:"required"`
 }
 
 type OptionsRequest struct {

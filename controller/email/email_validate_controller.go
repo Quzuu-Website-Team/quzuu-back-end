@@ -9,15 +9,13 @@ import (
 
 func Verify(c *gin.Context) {
 	emailVerification := services.EmailVerificationService{}
-	emailVerificationController := controller.Controller[models.CreateVerifyEmailRequest, models.EmailVerification, models.EmailVerification]{
+	emailVerificationController := controller.Controller[models.ValidateVerifyEmailRequest, models.EmailVerification, models.EmailVerification]{
 		Service: &emailVerification.Service,
 	}
-	emailVerificationController.HeaderParse(c, func() {
-		emailVerificationController.Service.Constructor.AccountId = emailVerificationController.AccountData.UserID
-		emailVerificationController.RequestJSON(c, func() {
-			emailVerificationController.Service.Constructor.Token = emailVerificationController.Request.Token
-			emailVerification.Validate()
-		})
+	emailVerificationController.RequestJSON(c, func() {
+
+		emailVerificationController.Service.Constructor.Token = emailVerificationController.Request.Token
+		emailVerification.Validate(emailVerificationController.Request.Email)
 	})
 
 }
