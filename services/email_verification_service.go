@@ -30,7 +30,7 @@ func (s *EmailVerificationService) Create(email string) {
 
 	token := uint(rand.IntN(999999-100000) + 100000)
 
-	repo := repositories.CreateEmailVerification(s.Constructor.Id, s.Constructor.AccountId, dueTime, token)
+	repo := repositories.CreateEmailVerification(s.Constructor.Id, accountRepo.Result.Id, dueTime, token)
 
 	s.Error = repo.RowsError
 	s.Result = repo.Result
