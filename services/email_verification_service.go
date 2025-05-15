@@ -1,10 +1,7 @@
 package services
 
 import (
-	"fmt"
-	"log"
 	"math/rand/v2"
-	"net/smtp"
 	"time"
 
 	"godp.abdanhafidz.com/config"
@@ -35,31 +32,31 @@ func (s *EmailVerificationService) Create(email string) {
 	s.Error = repo.RowsError
 	s.Result = repo.Result
 
-	// ⬇ Kirim token ke email user menggunakan SMTP
-	go func(toEmail string, token uint) {
-		from := config.SMTP_SENDER_EMAIL
-		password := config.SMTP_SENDER_PASSWORD
-		smtpHost := config.SMTP_HOST
-		smtpPort := config.SMTP_PORT
+	// // ⬇ Kirim token ke email user menggunakan SMTP
+	// go func(toEmail string, token uint) {
+	// 	from := config.SMTP_SENDER_EMAIL
+	// 	password := config.SMTP_SENDER_PASSWORD
+	// 	smtpHost := config.SMTP_HOST
+	// 	smtpPort := config.SMTP_PORT
 
-		auth := smtp.PlainAuth("", from, password, smtpHost)
+	// 	auth := smtp.PlainAuth("", from, password, smtpHost)
 
-		subject := "Email Verification Token"
-		body := fmt.Sprintf("Your verification token is: %06d\nPlease use it before it expires.", token)
+	// 	subject := "Email Verification Token"
+	// 	body := fmt.Sprintf("Your verification token is: %06d\nPlease use it before it expires.", token)
 
-		msg := []byte("To: " + toEmail + "\r\n" +
-			"Subject: " + subject + "\r\n" +
-			"\r\n" +
-			body + "\r\n")
+	// 	msg := []byte("To: " + toEmail + "\r\n" +
+	// 		"Subject: " + subject + "\r\n" +
+	// 		"\r\n" +
+	// 		body + "\r\n")
 
-		err := smtp.SendMail(smtpHost+":"+smtpPort, auth, from, []string{toEmail}, msg)
-		if err != nil {
-			s.Error = err
-			log.Printf("Error sending verification email: %v", err)
-			return
-		}
-	}(accountRepo.Result.Email, token)
-	s.Result.Token = 0
+	// 	err := smtp.SendMail(smtpHost+":"+smtpPort, auth, from, []string{toEmail}, msg)
+	// 	if err != nil {
+	// 		s.Error = err
+	// 		log.Printf("Error sending verification email: %v", err)
+	// 		return
+	// 	}
+	// }(accountRepo.Result.Email, token)
+	// s.Result.Token = repo.Result.Token
 }
 
 func (s *EmailVerificationService) Validate(email string) {
