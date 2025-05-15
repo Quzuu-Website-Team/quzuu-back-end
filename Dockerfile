@@ -21,7 +21,7 @@ RUN echo "DB_HOST=aws-0-ap-southeast-1.pooler.supabase.com" >> .env && \
     echo "DB_NAME=postgres" >> .env && \
     echo "HOST_ADDRESS = 0.0.0.0" >> .env && \
     echo "HOST_PORT = 7860" >> .env && \
-    echo "SALT=@quzuuAp12025" >> .env
+    echo "EMAIL_VERIFICATION_DURATION = 2" >> .env
 
 # Build aplikasi
 RUN go build -o main .
