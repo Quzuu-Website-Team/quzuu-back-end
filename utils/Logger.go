@@ -2,7 +2,6 @@ package utils
 
 import (
 	"fmt"
-	"godp.abdanhafidz.com/config"
 )
 
 func LogError(errorLogged error) {
