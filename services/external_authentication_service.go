@@ -44,6 +44,7 @@ func (s *GoogleAuthService) Authenticate(isAgree bool) {
 
 		createAccount := repositories.CreateAccount(models.Account{
 			Id:              uuid.New(),
+			Username:        payload.Claims["name"].(string),
 			Email:           email.(string),
 			IsEmailVerified: true,
 		})
