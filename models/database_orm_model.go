@@ -12,7 +12,7 @@ type Account struct {
 	Username          string     `gorm:"uniqueIndex" json:"username"`
 	Email             string     `gorm:"uniqueIndex" json:"email"`
 	Role              string     `json:"role"`
-	Password          string     `json:"password"`
+	Password          string     `json:"-"`
 	IsEmailVerified   bool       `json:"is_email_verified"`
 	IsDetailCompleted bool       `json:"is_detail_completed"`
 	CreatedAt         time.Time  `json:"created_at"`

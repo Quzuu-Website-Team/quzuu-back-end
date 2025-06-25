@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 
+	"github.com/google/uuid"
 	"godp.abdanhafidz.com/models"
 	"godp.abdanhafidz.com/repositories"
 	"google.golang.org/api/idtoken"
@@ -42,6 +43,7 @@ func (s *GoogleAuthService) Authenticate(isAgree bool) {
 		s.Constructor.OauthProvider = "Google"
 
 		createAccount := repositories.CreateAccount(models.Account{
+			Id:              uuid.New(),
 			Email:           email.(string),
 			IsEmailVerified: true,
 		})
